@@ -27,7 +27,9 @@ import {
 const App: React.FC = () => {
   const [brand, setBrand] = useState<BrandContext | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [view, setView] = useState<'dashboard' | 'post' | 'offer' | 'reply' | 'broadcast' | 'prompt' | 'planner' | 'history' | 'settings'>('dashboard');
+  // Business Profile opens first every time the app loads (pre-filled when
+  // a profile already exists), not the dashboard - see App below.
+  const [view, setView] = useState<'dashboard' | 'post' | 'offer' | 'reply' | 'broadcast' | 'prompt' | 'planner' | 'history' | 'settings'>('settings');
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
 
