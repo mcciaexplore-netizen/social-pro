@@ -8,23 +8,26 @@ import OfferGenerator from './components/OfferGenerator';
 import ReplyAssistant from './components/ReplyAssistant';
 import BroadcastHelper from './components/BroadcastHelper';
 import ImagePromptGenerator from './components/ImagePromptGenerator';
-import { 
-  saveUserProfile, 
-  getUserProfile, 
-  addHistoryToCloud, 
-  getHistoryFromCloud 
+import MonthlyPlanner from './components/MonthlyPlanner';
+import {
+  saveUserProfile,
+  getUserProfile,
+  addHistoryToCloud,
+  getHistoryFromCloud,
+  deleteHistoryItem
 } from './firebase';
-import { 
-  HomeIcon, 
-  HistoryIcon, 
+import {
+  HomeIcon,
+  HistoryIcon,
   SettingsIcon,
-  ChevronLeftIcon
+  ChevronLeftIcon,
+  TrashIcon
 } from './components/Icons';
 
 const App: React.FC = () => {
   const [brand, setBrand] = useState<BrandContext | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [view, setView] = useState<'dashboard' | 'post' | 'offer' | 'reply' | 'broadcast' | 'prompt' | 'history' | 'settings'>('dashboard');
+  const [view, setView] = useState<'dashboard' | 'post' | 'offer' | 'reply' | 'broadcast' | 'prompt' | 'planner' | 'history' | 'settings'>('dashboard');
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -65,6 +68,11 @@ const App: React.FC = () => {
     setIsSyncing(false);
   };
 
+  const handleDeleteHistory = async (id: string) => {
+    setHistory(prev => prev.filter(item => item.id !== id));
+    await deleteHistoryItem(id);
+  };
+
   const exportToCSV = () => {
     if (history.length === 0) return;
     const headers = ["ID", "Date", "Time", "Type", "Content"];
@@ -96,7 +104,8 @@ const App: React.FC = () => {
       case 'reply': return <ReplyAssistant brand={brand} onSave={addToHistory} />;
       case 'broadcast': return <BroadcastHelper brand={brand} onSave={addToHistory} />;
       case 'prompt': return <ImagePromptGenerator brand={brand} onSave={addToHistory} />;
-      case 'history': return <HistoryView history={history} onExport={exportToCSV} />;
+      case 'planner': return <MonthlyPlanner brand={brand} />;
+      case 'history': return <HistoryView history={history} onExport={exportToCSV} onDelete={handleDeleteHistory} />;
       case 'settings': return <Onboarding onSave={handleSaveBrand} initialData={brand} onCancel={() => setView('dashboard')} />;
       default: return <Dashboard setView={setView} brand={brand} />;
     }
@@ -138,41 +147,70 @@ const App: React.FC = () => {
   );
 };
 
-const HistoryView: React.FC<{ history: HistoryItem[], onExport: () => void }> = ({ history, onExport }) => (
-  <div className="space-y-6 animate-slide-up">
-    <div className="flex justify-between items-end">
-      <div>
-        <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Activity</h2>
-        <p className="text-sm font-medium text-slate-400">Cloud-synced history</p>
+const HISTORY_FILTERS = ['all', 'post', 'offer', 'reply', 'broadcast', 'prompt'] as const;
+
+const HistoryView: React.FC<{ history: HistoryItem[], onExport: () => void, onDelete: (id: string) => void }> = ({ history, onExport, onDelete }) => {
+  const [filter, setFilter] = useState<typeof HISTORY_FILTERS[number]>('all');
+  const filtered = filter === 'all' ? history : history.filter(item => item.type === filter);
+
+  return (
+    <div className="space-y-6 animate-slide-up">
+      <div className="flex justify-between items-end">
+        <div>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Activity</h2>
+          <p className="text-sm font-medium text-slate-400">Cloud-synced history</p>
+        </div>
+        {history.length > 0 && (
+          <button onClick={onExport} className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center gap-2">
+            Export CSV
+          </button>
+        )}
       </div>
+
       {history.length > 0 && (
-        <button onClick={onExport} className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-100 active:scale-95 transition-all flex items-center gap-2">
-          Export CSV
-        </button>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          {HISTORY_FILTERS.map(f => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {filtered.length === 0 ? (
+        <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
+          <div className="text-5xl mb-4 opacity-10">📁</div>
+          <p className="text-slate-400 font-bold italic">No history yet.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filtered.map(item => (
+            <div key={item.id} className="p-6 border border-slate-100 rounded-[2rem] bg-white shadow-sm hover:shadow-md transition-all">
+              <div className="flex justify-between items-center mb-4">
+                <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
+                <span className="text-[10px] font-bold text-slate-300 tracking-tighter uppercase">{new Date(item.timestamp).toLocaleDateString()}</span>
+              </div>
+              <p className="text-[15px] text-slate-700 whitespace-pre-wrap line-clamp-4 font-bold leading-relaxed">{item.content}</p>
+              <div className="mt-5 flex justify-end items-center gap-5">
+                <button
+                  onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
+                  className="text-slate-300 hover:text-red-500 transition-colors"
+                  aria-label="Delete"
+                >
+                  <TrashIcon className="w-4 h-4" />
+                </button>
+                <button onClick={() => { navigator.clipboard.writeText(item.content); alert("Copied!"); }} className="text-xs font-black text-blue-600 hover:underline">Copy Again</button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
-    {history.length === 0 ? (
-      <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
-        <div className="text-5xl mb-4 opacity-10">📁</div>
-        <p className="text-slate-400 font-bold italic">No history yet.</p>
-      </div>
-    ) : (
-      <div className="space-y-4">
-        {history.map(item => (
-          <div key={item.id} className="p-6 border border-slate-100 rounded-[2rem] bg-white shadow-sm hover:shadow-md transition-all">
-            <div className="flex justify-between items-center mb-4">
-              <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
-              <span className="text-[10px] font-bold text-slate-300 tracking-tighter uppercase">{new Date(item.timestamp).toLocaleDateString()}</span>
-            </div>
-            <p className="text-[15px] text-slate-700 whitespace-pre-wrap line-clamp-4 font-bold leading-relaxed">{item.content}</p>
-            <div className="mt-5 flex justify-end">
-              <button onClick={() => { navigator.clipboard.writeText(item.content); alert("Copied!"); }} className="text-xs font-black text-blue-600 hover:underline">Copy Again</button>
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 export default App;

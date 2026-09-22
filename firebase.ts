@@ -1,15 +1,16 @@
 
 import { initializeApp, getApps, FirebaseApp } from "firebase/app";
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  collection, 
-  addDoc, 
-  query, 
-  orderBy, 
-  limit, 
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  deleteDoc,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
   getDocs,
   Timestamp,
   Firestore
@@ -162,11 +163,14 @@ export const getClientId = () => {
 export const saveUserProfile = async (brand: BrandContext) => {
   const clientId = getClientId();
   localStorage.setItem('mccia_brand_profile', JSON.stringify(brand));
-  
+
   if (!db) return;
   try {
+    // The API key is a secret and must never leave this device, so it is
+    // excluded from the profile that gets synced to shared cloud storage.
+    const { apiKey, ...cloudSafeBrand } = brand;
     await setDoc(doc(db, "users", clientId), {
-      ...brand,
+      ...cloudSafeBrand,
       updatedAt: Timestamp.now()
     });
   } catch (error) {
@@ -191,16 +195,19 @@ export const getUserProfile = async (): Promise<BrandContext | null> => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // Case A: Cloud has data. Cloud is truth. Sync Down.
+      // Case A: Cloud has data. Cloud is truth for everything except the
+      // API key, which is never stored in the cloud - keep the local one.
       const cloudData = docSnap.data() as BrandContext;
+      const merged: BrandContext = { ...cloudData, apiKey: localData?.apiKey || cloudData.apiKey };
       console.log("Synced profile from cloud.");
-      localStorage.setItem('mccia_brand_profile', JSON.stringify(cloudData));
-      return cloudData;
+      localStorage.setItem('mccia_brand_profile', JSON.stringify(merged));
+      return merged;
     } else if (localData) {
       // Case B: Cloud is empty, but Local has data. Sync Up (Initial Sync).
       console.log("Cloud profile missing. Syncing local to cloud...");
+      const { apiKey, ...cloudSafeBrand } = localData;
       await setDoc(docRef, {
-        ...localData,
+        ...cloudSafeBrand,
         updatedAt: Timestamp.now()
       });
       return localData;
@@ -208,7 +215,7 @@ export const getUserProfile = async (): Promise<BrandContext | null> => {
   } catch (error) {
     console.error("Cloud fetch failed:", error);
   }
-  
+
   return localData;
 };
 
@@ -229,6 +236,21 @@ export const addHistoryToCloud = async (item: Omit<HistoryItem, 'id' | 'timestam
     return docRef.id;
   } catch (error) {
     return tempId;
+  }
+};
+
+export const deleteHistoryItem = async (id: string) => {
+  const localHistory: HistoryItem[] = JSON.parse(localStorage.getItem('mccia_history') || '[]');
+  localStorage.setItem('mccia_history', JSON.stringify(localHistory.filter(h => h.id !== id)));
+
+  // Offline-created items (never synced) only exist locally, nothing to delete in the cloud.
+  if (!db || id.startsWith('item_')) return;
+
+  const clientId = getClientId();
+  try {
+    await deleteDoc(doc(db, "users", clientId, "history", id));
+  } catch (error) {
+    console.error("Cloud delete failed:", error);
   }
 };
 

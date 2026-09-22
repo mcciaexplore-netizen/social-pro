@@ -55,13 +55,21 @@ const Dashboard: React.FC<Props> = ({ setView, brand }) => {
             iconColor="text-blue-600"
             onClick={() => setView('broadcast')}
           />
-          <ActionButton 
-            title="Image Designer" 
+          <ActionButton
+            title="Image Designer"
             desc="Structured prompts for visual ideas"
             icon="🎨"
             color="bg-pink-50"
             iconColor="text-pink-600"
             onClick={() => setView('prompt')}
+          />
+          <ActionButton
+            title="Monthly Planner"
+            desc="Generate a 30-day content outline"
+            icon="📅"
+            color="bg-indigo-50"
+            iconColor="text-indigo-600"
+            onClick={() => setView('planner')}
           />
         </div>
       </div>
