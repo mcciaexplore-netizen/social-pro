@@ -119,7 +119,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto min-h-screen flex flex-col bg-white pb-24 shadow-2xl border-x border-slate-100">
+    <div className="min-h-screen flex flex-col bg-white pb-24">
       <header className="px-6 py-5 flex items-center justify-between sticky top-0 bg-white z-30 border-b border-slate-100/50">
         <div className="flex items-center gap-4">
           {view !== 'dashboard' && (
@@ -140,7 +140,7 @@ const App: React.FC = () => {
         </div>
       </header>
       <main className="flex-1 p-6">{renderView()}</main>
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t border-slate-100 flex justify-around py-5 z-30 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)]">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-100 flex justify-around py-5 z-30 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)]">
         <button onClick={() => setView('dashboard')} className={`flex flex-col items-center gap-1.5 ${view === 'dashboard' ? 'text-blue-600' : 'text-slate-300'}`}>
           <HomeIcon className={`w-6 h-6 transition-transform ${view === 'dashboard' ? 'scale-110' : ''}`} />
           <span className="text-[10px] font-black uppercase tracking-widest">Home</span>
