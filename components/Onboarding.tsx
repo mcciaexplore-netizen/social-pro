@@ -23,22 +23,16 @@ const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) =
   </div>
 );
 
-// Standalone first-run: full-screen centered card (no app shell around it).
-// Embedded in Settings: renders inline, since the app's header/bottom nav
-// already wrap it - the old shared "min-h-screen + centered" wrapper pushed
-// content up under the sticky header and down behind the bottom nav there.
-const Frame: React.FC<{ embedded: boolean, children: React.ReactNode }> = ({ embedded, children }) => {
-  if (embedded) {
-    return <div className="animate-slide-up">{children}</div>;
-  }
-  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 py-12">
-      <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-blue-900/10 p-8 sm:p-10 border border-white animate-in fade-in zoom-in-95 duration-500">
-        {children}
-      </div>
+// Always a standalone full-screen page - used both on first run and when
+// opened from Settings, which now replaces the whole screen for this
+// (see App.tsx) rather than nesting it inside the header/bottom nav.
+const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 py-12">
+    <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-blue-900/10 p-8 sm:p-10 border border-white animate-in fade-in zoom-in-95 duration-500">
+      {children}
     </div>
-  );
-};
+  </div>
+);
 
 const FieldError: React.FC<{ message?: string }> = ({ message }) =>
   message ? (
@@ -89,7 +83,7 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
   };
 
   return (
-    <Frame embedded={!!onCancel}>
+    <Frame>
         <div className="text-center mb-10">
           <div className="w-32 h-16 bg-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-100 border border-slate-100 p-3">
             <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />

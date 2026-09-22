@@ -97,6 +97,12 @@ const App: React.FC = () => {
 
   if (!brand) return <Onboarding onSave={handleSaveBrand} />;
 
+  // Settings replaces the whole screen with the same standalone profile page
+  // used on first run - no header/bottom nav around it, just the form.
+  if (view === 'settings') {
+    return <Onboarding onSave={handleSaveBrand} initialData={brand} onCancel={() => setView('dashboard')} />;
+  }
+
   const renderView = () => {
     switch (view) {
       case 'post': return <PostGenerator brand={brand} history={history} onSave={addToHistory} />;
@@ -106,7 +112,6 @@ const App: React.FC = () => {
       case 'prompt': return <ImagePromptGenerator brand={brand} onSave={addToHistory} />;
       case 'planner': return <MonthlyPlanner brand={brand} />;
       case 'history': return <HistoryView history={history} onExport={exportToCSV} onDelete={handleDeleteHistory} />;
-      case 'settings': return <Onboarding onSave={handleSaveBrand} initialData={brand} onCancel={() => setView('dashboard')} />;
       default: return <Dashboard setView={setView} brand={brand} />;
     }
   };
