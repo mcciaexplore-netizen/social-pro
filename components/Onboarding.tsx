@@ -126,7 +126,7 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
 
               <div className="space-y-6">
                 <SectionHeading>Content Preferences</SectionHeading>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 bg-slate-50 border border-slate-100 rounded-2xl p-5">
                   <div className="space-y-2">
                     <label htmlFor="language" className={labelBase}>Language</label>
                     <select
@@ -135,24 +135,24 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
                       value={formData.language}
                       onChange={e => setFormData({ ...formData, language: e.target.value as any })}
                     >
-                  <option value="English">English</option>
-                  <option value="Hinglish">Hinglish</option>
-                  <option value="Hindi">Hindi</option>
-                </select>
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="tone" className={labelBase}>Tone</label>
-                <select
-                  id="tone"
-                  className={`${inputBase} ${inputOk} text-sm`}
-                  value={formData.tone}
-                  onChange={e => setFormData({ ...formData, tone: e.target.value as any })}
-                >
-                  <option value="Friendly">Friendly</option>
-                  <option value="Professional">Professional</option>
-                  <option value="Local">Local</option>
-                </select>
-              </div>
+                      <option value="English">English</option>
+                      <option value="Hinglish">Hinglish</option>
+                      <option value="Hindi">Hindi</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="tone" className={labelBase}>Tone</label>
+                    <select
+                      id="tone"
+                      className={`${inputBase} ${inputOk} text-sm`}
+                      value={formData.tone}
+                      onChange={e => setFormData({ ...formData, tone: e.target.value as any })}
+                    >
+                      <option value="Friendly">Friendly</option>
+                      <option value="Professional">Professional</option>
+                      <option value="Local">Local</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -160,60 +160,62 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
             <div className="space-y-6">
               <SectionHeading>Business Details</SectionHeading>
 
-              <div className="space-y-2">
-                <label htmlFor="businessName" className={labelBase}>Business Name*</label>
-                <input
-                  id="businessName"
-                  className={`${inputBase} ${errors.businessName ? inputError : inputOk}`}
-                  placeholder="e.g. Ramesh Hardware Store"
-                  autoComplete="organization"
-                  aria-invalid={!!errors.businessName}
-                  aria-describedby={errors.businessName ? 'businessName-error' : undefined}
-                  value={formData.businessName}
-                  onChange={e => { setFormData({ ...formData, businessName: e.target.value }); clearError('businessName'); }}
-                />
-                {errors.businessName && <div id="businessName-error"><FieldError message={errors.businessName} /></div>}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-5 bg-slate-50 border border-slate-100 rounded-2xl p-5">
                 <div className="space-y-2">
-                  <label htmlFor="category" className={labelBase}>Category*</label>
+                  <label htmlFor="businessName" className={labelBase}>Business Name*</label>
                   <input
-                    id="category"
-                    className={`${inputBase} ${errors.category ? inputError : inputOk} text-sm`}
-                    placeholder="Retail"
-                    aria-invalid={!!errors.category}
-                    aria-describedby={errors.category ? 'category-error' : undefined}
-                    value={formData.category}
-                    onChange={e => { setFormData({ ...formData, category: e.target.value }); clearError('category'); }}
+                    id="businessName"
+                    className={`${inputBase} ${errors.businessName ? inputError : inputOk}`}
+                    placeholder="e.g. Ramesh Hardware Store"
+                    autoComplete="organization"
+                    aria-invalid={!!errors.businessName}
+                    aria-describedby={errors.businessName ? 'businessName-error' : undefined}
+                    value={formData.businessName}
+                    onChange={e => { setFormData({ ...formData, businessName: e.target.value }); clearError('businessName'); }}
                   />
-                  {errors.category && <div id="category-error"><FieldError message={errors.category} /></div>}
+                  {errors.businessName && <div id="businessName-error"><FieldError message={errors.businessName} /></div>}
                 </div>
-                <div className="space-y-2">
-                  <label htmlFor="city" className={labelBase}>City*</label>
-                  <input
-                    id="city"
-                    className={`${inputBase} ${errors.city ? inputError : inputOk} text-sm`}
-                    placeholder="Pune"
-                    autoComplete="address-level2"
-                    aria-invalid={!!errors.city}
-                    aria-describedby={errors.city ? 'city-error' : undefined}
-                    value={formData.city}
-                    onChange={e => { setFormData({ ...formData, city: e.target.value }); clearError('city'); }}
-                  />
-                  {errors.city && <div id="city-error"><FieldError message={errors.city} /></div>}
-                </div>
-              </div>
 
-              <div className="space-y-2">
-                <label htmlFor="description" className={labelBase}>Description</label>
-                <textarea
-                  id="description"
-                  className={`${inputBase} ${inputOk} min-h-[80px] resize-none`}
-                  placeholder="What products or services do you offer?"
-                  value={formData.businessDescription}
-                  onChange={e => setFormData({ ...formData, businessDescription: e.target.value })}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="category" className={labelBase}>Category*</label>
+                    <input
+                      id="category"
+                      className={`${inputBase} ${errors.category ? inputError : inputOk} text-sm`}
+                      placeholder="Retail"
+                      aria-invalid={!!errors.category}
+                      aria-describedby={errors.category ? 'category-error' : undefined}
+                      value={formData.category}
+                      onChange={e => { setFormData({ ...formData, category: e.target.value }); clearError('category'); }}
+                    />
+                    {errors.category && <div id="category-error"><FieldError message={errors.category} /></div>}
+                  </div>
+                  <div className="space-y-2">
+                    <label htmlFor="city" className={labelBase}>City*</label>
+                    <input
+                      id="city"
+                      className={`${inputBase} ${errors.city ? inputError : inputOk} text-sm`}
+                      placeholder="Pune"
+                      autoComplete="address-level2"
+                      aria-invalid={!!errors.city}
+                      aria-describedby={errors.city ? 'city-error' : undefined}
+                      value={formData.city}
+                      onChange={e => { setFormData({ ...formData, city: e.target.value }); clearError('city'); }}
+                    />
+                    {errors.city && <div id="city-error"><FieldError message={errors.city} /></div>}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label htmlFor="description" className={labelBase}>Description</label>
+                  <textarea
+                    id="description"
+                    className={`${inputBase} ${inputOk} min-h-[80px] resize-none`}
+                    placeholder="What products or services do you offer?"
+                    value={formData.businessDescription}
+                    onChange={e => setFormData({ ...formData, businessDescription: e.target.value })}
+                  />
+                </div>
               </div>
             </div>
           </div>
