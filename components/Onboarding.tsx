@@ -29,7 +29,7 @@ const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // inside the header/bottom nav).
 const Frame: React.FC<{ subtitle: string, children: React.ReactNode }> = ({ subtitle, children }) => (
   <div className="min-h-screen w-full bg-white animate-in fade-in duration-500">
-    <div className="max-w-2xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
+    <div className="max-w-5xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
       <div className="text-center mb-10">
         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-5 border border-slate-100 shadow-sm p-2.5">
           <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
@@ -93,106 +93,48 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
   return (
     <Frame subtitle={initialData ? "Keep your brand context up to date" : "Let's set up your brand context"}>
         <form onSubmit={handleSubmit} noValidate className="space-y-8">
-          <div className="space-y-6">
-            <SectionHeading>AI Assistant</SectionHeading>
-            <div className="space-y-2 bg-blue-50 p-4 rounded-2xl border border-blue-100">
-              <label htmlFor="apiKey" className="block text-xs font-black text-blue-700 ml-1 uppercase tracking-widest">Gemini API Key</label>
-              <input
-                id="apiKey"
-                type="password"
-                autoComplete="off"
-                className="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all text-slate-900 placeholder:text-slate-300 font-bold text-base"
-                placeholder="Paste your Gemini API key here..."
-                value={formData.apiKey || ''}
-                onChange={e => setFormData({ ...formData, apiKey: e.target.value })}
-              />
-              <div className="flex items-center justify-between flex-wrap gap-x-3 gap-y-1 pt-1">
-                <a
-                  href="https://aistudio.google.com/app/apikey"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[11px] font-bold text-blue-600 hover:text-blue-800 underline ml-1"
-                >
-                  Get a free API key from Google AI Studio
-                </a>
-                <span className="text-[11px] font-bold text-blue-400 flex items-center gap-1">
-                  <span aria-hidden="true">🔒</span> Stays on this device
-                </span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 items-start">
+            <div className="space-y-10">
+              <div className="space-y-6">
+                <SectionHeading>AI Assistant</SectionHeading>
+                <div className="space-y-2 bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                  <label htmlFor="apiKey" className="block text-xs font-black text-blue-700 ml-1 uppercase tracking-widest">Gemini API Key</label>
+                  <input
+                    id="apiKey"
+                    type="password"
+                    autoComplete="off"
+                    className="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all text-slate-900 placeholder:text-slate-300 font-bold text-base"
+                    placeholder="Paste your Gemini API key here..."
+                    value={formData.apiKey || ''}
+                    onChange={e => setFormData({ ...formData, apiKey: e.target.value })}
+                  />
+                  <div className="flex items-center justify-between flex-wrap gap-x-3 gap-y-1 pt-1">
+                    <a
+                      href="https://aistudio.google.com/app/apikey"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] font-bold text-blue-600 hover:text-blue-800 underline ml-1"
+                    >
+                      Get a free API key from Google AI Studio
+                    </a>
+                    <span className="text-[11px] font-bold text-blue-400 flex items-center gap-1">
+                      <span aria-hidden="true">🔒</span> Stays on this device
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div className="space-y-6">
-            <SectionHeading>Business Details</SectionHeading>
-
-            <div className="space-y-2">
-              <label htmlFor="businessName" className={labelBase}>Business Name*</label>
-              <input
-                id="businessName"
-                className={`${inputBase} ${errors.businessName ? inputError : inputOk}`}
-                placeholder="e.g. Ramesh Hardware Store"
-                autoComplete="organization"
-                aria-invalid={!!errors.businessName}
-                aria-describedby={errors.businessName ? 'businessName-error' : undefined}
-                value={formData.businessName}
-                onChange={e => { setFormData({ ...formData, businessName: e.target.value }); clearError('businessName'); }}
-              />
-              {errors.businessName && <div id="businessName-error"><FieldError message={errors.businessName} /></div>}
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="category" className={labelBase}>Category*</label>
-                <input
-                  id="category"
-                  className={`${inputBase} ${errors.category ? inputError : inputOk} text-sm`}
-                  placeholder="Retail"
-                  aria-invalid={!!errors.category}
-                  aria-describedby={errors.category ? 'category-error' : undefined}
-                  value={formData.category}
-                  onChange={e => { setFormData({ ...formData, category: e.target.value }); clearError('category'); }}
-                />
-                {errors.category && <div id="category-error"><FieldError message={errors.category} /></div>}
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="city" className={labelBase}>City*</label>
-                <input
-                  id="city"
-                  className={`${inputBase} ${errors.city ? inputError : inputOk} text-sm`}
-                  placeholder="Pune"
-                  autoComplete="address-level2"
-                  aria-invalid={!!errors.city}
-                  aria-describedby={errors.city ? 'city-error' : undefined}
-                  value={formData.city}
-                  onChange={e => { setFormData({ ...formData, city: e.target.value }); clearError('city'); }}
-                />
-                {errors.city && <div id="city-error"><FieldError message={errors.city} /></div>}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="description" className={labelBase}>Description</label>
-              <textarea
-                id="description"
-                className={`${inputBase} ${inputOk} min-h-[80px] resize-none`}
-                placeholder="What products or services do you offer?"
-                value={formData.businessDescription}
-                onChange={e => setFormData({ ...formData, businessDescription: e.target.value })}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <SectionHeading>Content Preferences</SectionHeading>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="language" className={labelBase}>Language</label>
-                <select
-                  id="language"
-                  className={`${inputBase} ${inputOk} text-sm`}
-                  value={formData.language}
-                  onChange={e => setFormData({ ...formData, language: e.target.value as any })}
-                >
+              <div className="space-y-6">
+                <SectionHeading>Content Preferences</SectionHeading>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label htmlFor="language" className={labelBase}>Language</label>
+                    <select
+                      id="language"
+                      className={`${inputBase} ${inputOk} text-sm`}
+                      value={formData.language}
+                      onChange={e => setFormData({ ...formData, language: e.target.value as any })}
+                    >
                   <option value="English">English</option>
                   <option value="Hinglish">Hinglish</option>
                   <option value="Hindi">Hindi</option>
@@ -210,6 +152,68 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
                   <option value="Professional">Professional</option>
                   <option value="Local">Local</option>
                 </select>
+              </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              <SectionHeading>Business Details</SectionHeading>
+
+              <div className="space-y-2">
+                <label htmlFor="businessName" className={labelBase}>Business Name*</label>
+                <input
+                  id="businessName"
+                  className={`${inputBase} ${errors.businessName ? inputError : inputOk}`}
+                  placeholder="e.g. Ramesh Hardware Store"
+                  autoComplete="organization"
+                  aria-invalid={!!errors.businessName}
+                  aria-describedby={errors.businessName ? 'businessName-error' : undefined}
+                  value={formData.businessName}
+                  onChange={e => { setFormData({ ...formData, businessName: e.target.value }); clearError('businessName'); }}
+                />
+                {errors.businessName && <div id="businessName-error"><FieldError message={errors.businessName} /></div>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="category" className={labelBase}>Category*</label>
+                  <input
+                    id="category"
+                    className={`${inputBase} ${errors.category ? inputError : inputOk} text-sm`}
+                    placeholder="Retail"
+                    aria-invalid={!!errors.category}
+                    aria-describedby={errors.category ? 'category-error' : undefined}
+                    value={formData.category}
+                    onChange={e => { setFormData({ ...formData, category: e.target.value }); clearError('category'); }}
+                  />
+                  {errors.category && <div id="category-error"><FieldError message={errors.category} /></div>}
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="city" className={labelBase}>City*</label>
+                  <input
+                    id="city"
+                    className={`${inputBase} ${errors.city ? inputError : inputOk} text-sm`}
+                    placeholder="Pune"
+                    autoComplete="address-level2"
+                    aria-invalid={!!errors.city}
+                    aria-describedby={errors.city ? 'city-error' : undefined}
+                    value={formData.city}
+                    onChange={e => { setFormData({ ...formData, city: e.target.value }); clearError('city'); }}
+                  />
+                  {errors.city && <div id="city-error"><FieldError message={errors.city} /></div>}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="description" className={labelBase}>Description</label>
+                <textarea
+                  id="description"
+                  className={`${inputBase} ${inputOk} min-h-[80px] resize-none`}
+                  placeholder="What products or services do you offer?"
+                  value={formData.businessDescription}
+                  onChange={e => setFormData({ ...formData, businessDescription: e.target.value })}
+                />
               </div>
             </div>
           </div>
