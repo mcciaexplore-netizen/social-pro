@@ -15,6 +15,12 @@ View your app in AI Studio: https://ai.studio/apps/drive/1IcRUAi6Uw1yPS4ZG0_2T6v
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Copy [.env.example](.env.example) to `.env.local` and set `GEMINI_API_KEY` to your Gemini API key (Firebase vars are optional - see the comments in that file)
 3. Run the app:
    `npm run dev`
+
+## Deploy to Vercel
+
+1. Push this repo to GitHub and import it in Vercel (framework preset: Vite - auto-detected, no extra config needed)
+2. In the Vercel project's Environment Variables settings, add `GEMINI_API_KEY` (required), and optionally the `VITE_FIREBASE_*` variables from [.env.example](.env.example) for cloud sync
+3. Deploy - Vercel runs `npm run build` and serves the `dist` output automatically
