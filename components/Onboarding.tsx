@@ -29,7 +29,7 @@ const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // inside the header/bottom nav).
 const Frame: React.FC<{ subtitle: string, children: React.ReactNode }> = ({ subtitle, children }) => (
   <div className="min-h-screen w-full bg-white animate-in fade-in duration-500">
-    <div className="max-w-5xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
+    <div className="w-full px-6 sm:px-10 lg:px-16 py-12 sm:py-16">
       <div className="text-center mb-10">
         <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-5 border border-slate-100 shadow-sm p-2.5">
           <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
