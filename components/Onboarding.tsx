@@ -23,24 +23,21 @@ const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) =
   </div>
 );
 
-// Full-screen split layout - a branded panel plus the form - used both on
-// first run and when opened from Settings (which replaces the whole screen
-// for this, see App.tsx, rather than nesting it inside the header/bottom nav).
+// Full-screen, minimal layout - plain white background, no heavy color
+// blocks - used both on first run and when opened from Settings (which
+// replaces the whole screen for this, see App.tsx, rather than nesting it
+// inside the header/bottom nav).
 const Frame: React.FC<{ subtitle: string, children: React.ReactNode }> = ({ subtitle, children }) => (
-  <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white animate-in fade-in duration-500">
-    <div className="lg:w-[38%] xl:w-1/3 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex flex-col items-center justify-center gap-6 p-10 py-14 lg:py-10 shrink-0">
-      <div className="w-32 h-16 bg-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-blue-900/20 p-3">
-        <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
+  <div className="min-h-screen w-full bg-white animate-in fade-in duration-500">
+    <div className="max-w-2xl mx-auto px-6 sm:px-10 py-12 sm:py-16">
+      <div className="text-center mb-10">
+        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-5 border border-slate-100 shadow-sm p-2.5">
+          <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
+        </div>
+        <h2 className="text-3xl font-black text-slate-900 tracking-tight">Business Profile</h2>
+        <p className="text-slate-500 text-base mt-2 font-medium">{subtitle}</p>
       </div>
-      <div className="text-center">
-        <h2 className="text-3xl font-black tracking-tight">Business Profile</h2>
-        <p className="text-blue-100 text-base mt-2 font-medium">{subtitle}</p>
-      </div>
-    </div>
-    <div className="flex-1 flex items-start lg:items-center justify-center p-6 sm:p-10">
-      <div className="w-full max-w-xl py-6">
-        {children}
-      </div>
+      {children}
     </div>
   </div>
 );
