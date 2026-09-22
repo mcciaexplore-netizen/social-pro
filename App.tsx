@@ -113,7 +113,7 @@ const App: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto min-h-screen flex flex-col bg-white pb-24 shadow-2xl border-x border-slate-100">
-      <header className="px-6 py-5 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-xl z-30 border-b border-slate-100/50">
+      <header className="px-6 py-5 flex items-center justify-between sticky top-0 bg-white z-30 border-b border-slate-100/50">
         <div className="flex items-center gap-4">
           {view !== 'dashboard' && (
             <button onClick={() => setView('dashboard')} className="p-2 -ml-2 hover:bg-slate-100 rounded-full transition-all active:scale-90">
