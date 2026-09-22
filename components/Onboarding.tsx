@@ -23,13 +23,24 @@ const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) =
   </div>
 );
 
-// Always a standalone full-screen page - used both on first run and when
-// opened from Settings, which now replaces the whole screen for this
-// (see App.tsx) rather than nesting it inside the header/bottom nav.
-const Frame: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 py-12">
-    <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-blue-900/10 p-8 sm:p-10 border border-white animate-in fade-in zoom-in-95 duration-500">
-      {children}
+// Full-screen split layout - a branded panel plus the form - used both on
+// first run and when opened from Settings (which replaces the whole screen
+// for this, see App.tsx, rather than nesting it inside the header/bottom nav).
+const Frame: React.FC<{ subtitle: string, children: React.ReactNode }> = ({ subtitle, children }) => (
+  <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white animate-in fade-in duration-500">
+    <div className="lg:w-[38%] xl:w-1/3 bg-gradient-to-br from-blue-600 to-blue-800 text-white flex flex-col items-center justify-center gap-6 p-10 py-14 lg:py-10 shrink-0">
+      <div className="w-32 h-16 bg-white rounded-[1.5rem] flex items-center justify-center shadow-xl shadow-blue-900/20 p-3">
+        <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
+      </div>
+      <div className="text-center">
+        <h2 className="text-3xl font-black tracking-tight">Business Profile</h2>
+        <p className="text-blue-100 text-base mt-2 font-medium">{subtitle}</p>
+      </div>
+    </div>
+    <div className="flex-1 flex items-start lg:items-center justify-center p-6 sm:p-10">
+      <div className="w-full max-w-xl py-6">
+        {children}
+      </div>
     </div>
   </div>
 );
@@ -83,17 +94,7 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
   };
 
   return (
-    <Frame>
-        <div className="text-center mb-10">
-          <div className="w-32 h-16 bg-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-100 border border-slate-100 p-3">
-            <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
-          </div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">Business Profile</h2>
-          <p className="text-slate-500 text-base mt-2 font-medium">
-            {initialData ? "Keep your brand context up to date" : "Let's set up your brand context"}
-          </p>
-        </div>
-
+    <Frame subtitle={initialData ? "Keep your brand context up to date" : "Let's set up your brand context"}>
         <form onSubmit={handleSubmit} noValidate className="space-y-8">
           <div className="space-y-6">
             <SectionHeading>AI Assistant</SectionHeading>
