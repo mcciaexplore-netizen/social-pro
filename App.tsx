@@ -120,9 +120,9 @@ const App: React.FC = () => {
               <ChevronLeftIcon className="w-5 h-5 text-slate-800" />
             </button>
           )}
-          <div>
-            <h1 className="font-black text-xl tracking-tighter text-blue-600 leading-none">MCCIA</h1>
-            <span className="text-[10px] font-black uppercase text-slate-300 tracking-[0.3em]">Socials</span>
+          <div className="flex items-center gap-2">
+            <img src="/mccia-logo.png" alt="MCCIA" className="h-8 w-auto" />
+            <span className="text-[10px] font-black uppercase text-slate-300 tracking-[0.3em] border-l border-slate-200 pl-2">Socials</span>
           </div>
         </div>
         <div className="flex items-center gap-3">

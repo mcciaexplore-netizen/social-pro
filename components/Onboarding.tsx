@@ -43,8 +43,8 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 sm:p-6 py-12">
       <div className="w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl shadow-blue-900/10 p-8 sm:p-10 border border-white animate-in fade-in zoom-in-95 duration-500">
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-[2rem] flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 shadow-xl shadow-blue-200">
-            M
+          <div className="w-32 h-16 bg-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-blue-100 border border-slate-100 p-3">
+            <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
           </div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tight">Business Profile</h2>
           <p className="text-slate-500 text-base mt-2 font-medium">Let's set up your brand context</p>
