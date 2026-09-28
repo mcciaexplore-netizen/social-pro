@@ -114,6 +114,49 @@ export const generateReply = async (brand: BrandContext, customerMessage: string
   return response.text || "";
 };
 
+export interface ReplyVariant {
+  style: string;
+  text: string;
+}
+
+export const generateReplyVariants = async (
+  brand: BrandContext,
+  customerMessage: string,
+  context?: string
+): Promise<ReplyVariant[]> => {
+  const ai = getAI(brand.apiKey);
+  const prompt = `A customer sent this message: "${customerMessage}"
+  ${context ? `Extra context about the product/event/company to reference: ${context}` : ''}
+  Write 4 different reply variants: one Professional, one Friendly, one Short (1-2 lines), one Detailed.
+  Each must fully address the customer's message using the extra context where relevant.`;
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: prompt,
+    config: {
+      systemInstruction: getSystemInstruction(brand),
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            style: { type: Type.STRING },
+            text: { type: Type.STRING }
+          },
+          required: ["style", "text"]
+        }
+      }
+    }
+  });
+  const text = response.text || "[]";
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return [];
+  }
+};
+
 export const generateBroadcast = async (brand: BrandContext) => {
   const ai = getAI(brand.apiKey);
   const response = await ai.models.generateContent({

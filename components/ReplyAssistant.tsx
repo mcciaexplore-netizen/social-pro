@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { generateReply } from '../geminiService';
+import { generateReplyVariants, ReplyVariant } from '../geminiService';
 import { BrandContext } from '../types';
 import { CopyIcon, WhatsAppIcon } from './Icons';
 
@@ -11,72 +11,144 @@ interface Props {
 
 const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
   const [msg, setMsg] = useState('');
-  const [result, setResult] = useState<string | null>(null);
+  const [context, setContext] = useState('');
+  const [variants, setVariants] = useState<ReplyVariant[]>([]);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [editedText, setEditedText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const handleGenerate = async () => {
     if (!msg) return;
     setLoading(true);
+    setVariants([]);
+    setSelectedIdx(null);
+    setSaved(false);
     try {
-      const output = await generateReply(brand, msg);
-      if (output) {
-        setResult(output);
-        onSave({ type: 'reply', content: output });
+      const output = await generateReplyVariants(brand, msg, context);
+      setVariants(output);
+      if (output.length > 0) {
+        setSelectedIdx(0);
+        setEditedText(output[0].text);
       }
     } catch (e) {
-      alert("Error.");
+      alert("Error generating replies.");
     } finally {
       setLoading(false);
     }
   };
 
+  const selectVariant = (idx: number) => {
+    setSelectedIdx(idx);
+    setEditedText(variants[idx].text);
+    setSaved(false);
+  };
+
+  const handleUseReply = () => {
+    if (!editedText) return;
+    onSave({ type: 'reply', content: editedText, status: 'published' });
+    setSaved(true);
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm">
-        <div className="w-16 h-16 bg-green-50 text-green-600 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">💬</div>
-        <h3 className="text-xl font-black text-slate-900 mb-4 text-center">Reply Assistant</h3>
-
-        <div className="bg-green-50 p-4 rounded-2xl border border-green-100 flex gap-3 mb-5">
-          <WhatsAppIcon className="w-6 h-6 text-green-600 shrink-0" />
-          <p className="text-xs text-green-800 font-medium">Paste the customer message below to get a polite response.</p>
-        </div>
-
-        <textarea
-          className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3.5 h-32 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-slate-900 font-bold placeholder:text-slate-300 placeholder:font-medium"
-          placeholder="Paste customer message here..."
-          value={msg}
-          onChange={e => setMsg(e.target.value)}
-        />
-
-        <button
-          onClick={handleGenerate}
-          disabled={loading || !msg}
-          className="mt-5 w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-5 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
-        >
-          {loading ? (
-            <>
-              <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>Drafting...</span>
-            </>
-          ) : (
-            'Generate Reply'
-          )}
-        </button>
+    <div className="space-y-6 animate-slide-up">
+      <div>
+        <h2 className="text-3xl font-black text-black tracking-tighter">Reply Assistant</h2>
+        <p className="text-sm font-medium text-black">Respond to customer queries with AI-generated replies.</p>
       </div>
 
-      {result && (
-        <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 bg-white border-2 border-slate-50 rounded-[2rem] p-6 shadow-sm">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Suggested Reply</span>
-            <button onClick={() => { navigator.clipboard.writeText(result); alert("Copied!"); }} className="text-blue-600 flex items-center gap-2 text-xs font-black bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition-all active:scale-95">
-              <CopyIcon className="w-4 h-4" /> Copy
-            </button>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        <div className="space-y-4 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Query</span>
           </div>
-          <div className="bg-slate-50 p-6 rounded-2xl italic text-base leading-relaxed text-slate-900 font-bold border-l-4 border-blue-500 shadow-inner">
-            "{result}"
+          <div className="bg-green-50 p-3 rounded-xl border border-green-100 flex gap-2 items-start">
+            <WhatsAppIcon className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
+            <p className="text-xs text-green-800 font-medium">Paste the customer's message below.</p>
           </div>
+          <textarea
+            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3.5 h-28 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-bold placeholder:text-slate-300 placeholder:font-medium"
+            placeholder="e.g. Hi, can you tell me more about your workshop?"
+            value={msg}
+            onChange={e => setMsg(e.target.value)}
+          />
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Context (optional)</label>
+            <textarea
+              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3 h-20 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-medium text-sm placeholder:text-slate-300"
+              placeholder="Product, event or company details the AI should reference"
+              value={context}
+              onChange={e => setContext(e.target.value)}
+            />
+          </div>
+
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !msg}
+            className="w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-4 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
+          >
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Drafting Replies...</span>
+              </>
+            ) : variants.length > 0 ? 'Regenerate' : 'Generate Replies'}
+          </button>
+
+          {variants.length > 0 && (
+            <div className="space-y-2 pt-2">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Suggested Replies</span>
+              {variants.map((v, i) => (
+                <button
+                  key={i}
+                  onClick={() => selectVariant(i)}
+                  className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start justify-between gap-3 ${
+                    selectedIdx === i ? 'border-blue-500 bg-blue-50' : 'border-slate-100 bg-white hover:border-slate-200'
+                  }`}
+                >
+                  <div className="min-w-0">
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${selectedIdx === i ? 'text-blue-600' : 'text-slate-400'}`}>{v.style}</span>
+                    <p className="text-xs text-black font-medium truncate">{v.text}</p>
+                  </div>
+                  {selectedIdx === i && <span className="text-blue-600 shrink-0">✓</span>}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+
+        <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 space-y-4 lg:sticky lg:top-24">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reply Preview</span>
+          {selectedIdx === null ? (
+            <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+              <p className="text-slate-400 font-bold italic text-sm">Generate replies to preview one here.</p>
+            </div>
+          ) : (
+            <>
+              <textarea
+                value={editedText}
+                onChange={e => { setEditedText(e.target.value); setSaved(false); }}
+                className="w-full bg-slate-50 p-5 rounded-2xl text-base leading-relaxed text-black font-bold border-l-4 border-blue-500 shadow-inner min-h-[220px] outline-none focus:ring-4 focus:ring-blue-50"
+              />
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  onClick={() => { navigator.clipboard.writeText(editedText); alert('Copied!'); }}
+                  className="text-blue-600 flex items-center gap-2 text-xs font-black bg-blue-50 px-4 py-2.5 rounded-full hover:bg-blue-100 transition-all active:scale-95"
+                >
+                  <CopyIcon className="w-4 h-4" /> Copy Reply
+                </button>
+                <button
+                  onClick={handleUseReply}
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-100 active:scale-95 transition-all"
+                >
+                  {saved ? 'Saved ✓' : 'Use Reply'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
