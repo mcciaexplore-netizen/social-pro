@@ -27,9 +27,10 @@ type ContentSegment = 'content' | 'activity';
 const App: React.FC = () => {
   const [brand, setBrand] = useState<BrandContext | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  // Business Profile opens first every time the app loads (pre-filled when
-  // a profile already exists), not the dashboard - see App below.
-  const [view, setView] = useState<View>('settings');
+  // Returning visitors (a saved profile exists) land on the Dashboard;
+  // Business Profile only opens standalone on true first-run (see below,
+  // where `!brand` is checked) or when Settings is opened explicitly.
+  const [view, setView] = useState<View>('dashboard');
   const [contentSegment, setContentSegment] = useState<ContentSegment>('content');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
