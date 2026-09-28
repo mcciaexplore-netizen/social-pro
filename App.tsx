@@ -165,7 +165,7 @@ const App: React.FC = () => {
           onDeleteContact={handleDeleteContact}
         />
       );
-      case 'prompt': return <ImagePromptGenerator brand={brand} onSave={addToHistory} />;
+      case 'prompt': return <ImagePromptGenerator brand={brand} onSave={addToHistory} history={history} onDelete={handleDeleteHistory} />;
       case 'planner': return <MonthlyPlanner brand={brand} />;
       default: return <Dashboard setView={navigate} brand={brand} />;
     }
