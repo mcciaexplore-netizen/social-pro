@@ -16,7 +16,7 @@ const ToolsGrid: React.FC<Props> = ({ setView, searchQuery }) => {
 
   if (tools.length === 0) {
     return (
-      <div className="text-center py-16 bg-slate-50 rounded-[2rem] border border-dashed border-slate-200">
+      <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200">
         <p className="text-slate-400 font-bold italic">No tools match "{searchQuery}".</p>
       </div>
     );

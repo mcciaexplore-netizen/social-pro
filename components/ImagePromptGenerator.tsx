@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { generateImageAsset } from '../geminiService';
 import { BrandContext, HistoryItem } from '../types';
-import { TrashIcon } from './Icons';
+import { TrashIcon, PaletteIcon } from './Icons';
 
 interface Props {
   brand: BrandContext;
@@ -108,9 +108,11 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
             <button
               key={cat}
               onClick={() => useTemplate(cat)}
-              className="aspect-square rounded-2xl border border-slate-200 shadow-md shadow-slate-100 bg-gradient-to-br from-blue-50 to-indigo-100 hover:border-blue-300 hover:scale-[0.98] transition-all flex flex-col items-center justify-center gap-2 p-4"
+              className="aspect-square rounded-xl border border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50 transition-colors flex flex-col items-center justify-center gap-2.5 p-4"
             >
-              <span className="text-3xl">🎨</span>
+              <div className="w-10 h-10 rounded-lg bg-slate-100 text-blue-600 flex items-center justify-center">
+                <PaletteIcon className="w-5 h-5" />
+              </div>
               <span className="font-black text-black text-sm text-center">{cat}</span>
             </button>
           ))}
@@ -119,7 +121,7 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
 
       {tab === 'prompt' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          <div className="space-y-5 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="space-y-5 bg-white border border-slate-200 rounded-xl p-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Describe your image</label>
               <textarea
@@ -134,7 +136,7 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Style</label>
               <div className="flex flex-wrap gap-2">
                 {STYLES.map(s => (
-                  <button key={s} onClick={() => setStyle(s)} className={`px-4 py-2 rounded-full text-xs font-black transition-all ${style === s ? 'bg-blue-600 text-white shadow-md shadow-blue-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>{s}</button>
+                  <button key={s} onClick={() => setStyle(s)} className={`px-4 py-2 rounded-full text-xs font-black transition-all ${style === s ? 'bg-blue-600 text-white ' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>{s}</button>
                 ))}
               </div>
             </div>
@@ -143,7 +145,7 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Format</label>
               <div className="flex flex-wrap gap-2">
                 {FORMATS.map(f => (
-                  <button key={f.label} onClick={() => setFormat(f)} className={`px-4 py-2 rounded-full text-xs font-black transition-all ${format.label === f.label ? 'bg-blue-600 text-white shadow-md shadow-blue-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>{f.label}</button>
+                  <button key={f.label} onClick={() => setFormat(f)} className={`px-4 py-2 rounded-full text-xs font-black transition-all ${format.label === f.label ? 'bg-blue-600 text-white ' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>{f.label}</button>
                 ))}
               </div>
             </div>
@@ -156,7 +158,7 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
             <button
               onClick={handleGenerate}
               disabled={loading || !prompt}
-              className="w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-4 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
             >
               {loading ? (
                 <>
@@ -169,7 +171,7 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
             </button>
           </div>
 
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Result</span>
             <div className="mt-4 bg-slate-900 rounded-2xl overflow-hidden min-h-[300px] flex items-center justify-center">
               {loading ? (
@@ -198,14 +200,14 @@ const ImagePromptGenerator: React.FC<Props> = ({ brand, history, onSave, onDelet
 
       {tab === 'designs' && (
         designs.length === 0 ? (
-          <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
-            <div className="text-5xl mb-4 opacity-10">🎨</div>
+          <div className="text-center py-24 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+            <PaletteIcon className="w-8 h-8 text-slate-300 mx-auto mb-3" />
             <p className="text-slate-400 font-bold italic">No saved designs yet. Generate one in the AI Prompt tab.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {designs.map(d => (
-              <div key={d.id} className="rounded-2xl overflow-hidden border border-slate-200 shadow-md shadow-slate-100 bg-white group relative">
+              <div key={d.id} className="rounded-2xl overflow-hidden border border-slate-200 bg-white group relative">
                 <img src={d.content} alt={d.meta?.prompt || 'Design'} className="w-full aspect-square object-cover" />
                 <div className="p-3">
                   <p className="text-xs font-bold text-black truncate">{d.meta?.prompt || 'Untitled design'}</p>

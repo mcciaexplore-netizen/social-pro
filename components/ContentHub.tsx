@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ContentStatus, HistoryItem } from '../types';
-import { TrashIcon, ContentIcon, HistoryIcon, SearchIcon } from './Icons';
+import { TrashIcon, ContentIcon, HistoryIcon, SearchIcon, FolderIcon } from './Icons';
 
 type Segment = 'content' | 'activity';
 type TypeTab = 'all' | 'post' | 'offer' | 'message' | 'prompt';
@@ -153,7 +153,7 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
           </p>
         </div>
         {segment === 'activity' && history.length > 0 && (
-          <button onClick={onExport} className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-100 active:scale-95 transition-all">
+          <button onClick={onExport} className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black active:scale-95 transition-all">
             Export CSV
           </button>
         )}
@@ -200,8 +200,8 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
           </div>
 
           {contentFiltered.length === 0 ? (
-            <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
-              <div className="text-5xl mb-4 opacity-10">📁</div>
+            <div className="text-center py-24 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+              <FolderIcon className="w-8 h-8 text-slate-300 mx-auto mb-3" />
               <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
             </div>
           ) : (
@@ -211,7 +211,7 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                 const isImage = item.type === 'prompt' && item.meta?.kind === 'image';
                 const displayDate = status === 'scheduled' && item.scheduledAt ? item.scheduledAt : item.timestamp;
                 return (
-                  <div key={item.id} className="p-6 border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] bg-white hover:shadow-lg transition-all">
+                  <div key={item.id} className="p-6 border border-slate-200 rounded-xl bg-white hover:shadow-lg transition-all">
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
@@ -268,8 +268,8 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
           )}
 
           {activityFiltered.length === 0 ? (
-            <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
-              <div className="text-5xl mb-4 opacity-10">📁</div>
+            <div className="text-center py-24 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+              <FolderIcon className="w-8 h-8 text-slate-300 mx-auto mb-3" />
               <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
             </div>
           ) : (

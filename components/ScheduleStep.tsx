@@ -23,7 +23,7 @@ const ScheduleStep: React.FC<Props> = ({ onBack, onConfirm, confirmLabel = 'Conf
   };
 
   return (
-    <div className="animate-in fade-in duration-300 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 space-y-6">
+    <div className="animate-in fade-in duration-300 bg-white border border-slate-200 rounded-xl p-6 space-y-6">
       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">When should this go out?</span>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {OPTIONS.map(opt => (
@@ -48,8 +48,8 @@ const ScheduleStep: React.FC<Props> = ({ onBack, onConfirm, confirmLabel = 'Conf
       )}
 
       <div className="flex gap-3 pt-2">
-        <button onClick={onBack} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
-        <button onClick={handleConfirm} className="flex-1 py-4 rounded-[1.5rem] font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">{confirmLabel}</button>
+        <button onClick={onBack} className="flex-1 py-4 rounded-lg font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
+        <button onClick={handleConfirm} className="flex-1 py-4 rounded-lg font-black text-white bg-blue-600 hover:bg-blue-700 transition-all">{confirmLabel}</button>
       </div>
     </div>
   );

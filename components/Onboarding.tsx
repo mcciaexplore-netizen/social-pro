@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { BrandContext } from '../types';
 import { saveManualFirebaseConfig } from '../firebase';
-import { ChevronLeftIcon } from './Icons';
+import { ChevronLeftIcon, LockIcon } from './Icons';
 
 interface Props {
   onSave: (brand: BrandContext) => void;
@@ -145,7 +145,7 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
                       Get a free API key from Google AI Studio
                     </a>
                     <span className="text-[11px] font-bold text-blue-400 flex items-center gap-1">
-                      <span aria-hidden="true">🔒</span> Stays on this device
+                      <LockIcon className="w-3 h-3" /> Stays on this device
                     </span>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
           <div className="pt-2 max-w-md mx-auto w-full space-y-3">
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-[1.5rem] font-black text-lg shadow-xl hover:shadow-blue-200 active:scale-95 hover:-translate-y-0.5 transition-all"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black text-lg active:scale-95 hover:-translate-y-0.5 transition-all"
             >
               {initialData ? 'Update Profile' : 'Save & Start'}
             </button>

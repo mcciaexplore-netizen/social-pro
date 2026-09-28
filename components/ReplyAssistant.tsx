@@ -58,7 +58,7 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        <div className="space-y-4 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+        <div className="space-y-4 bg-white border border-slate-200 rounded-xl p-6">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Query</span>
           </div>
@@ -86,7 +86,7 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
           <button
             onClick={handleGenerate}
             disabled={loading || !msg}
-            className="w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-4 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
           >
             {loading ? (
               <>
@@ -104,8 +104,8 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
                   key={i}
                   onClick={() => selectVariant(i)}
                   className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start justify-between gap-3 ${
-                    selectedIdx === i ? 'border-blue-500 bg-blue-50' : 'border-slate-100 bg-white hover:border-slate-200'
-                  }`}
+ selectedIdx === i ? 'border-blue-500 bg-blue-50' : 'border-slate-100 bg-white hover:border-slate-200'
+ }`}
                 >
                   <div className="min-w-0">
                     <span className={`text-[10px] font-black uppercase tracking-widest ${selectedIdx === i ? 'text-blue-600' : 'text-slate-400'}`}>{v.style}</span>
@@ -118,7 +118,7 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
           )}
         </div>
 
-        <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 space-y-4 lg:sticky lg:top-24">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 lg:sticky lg:top-24">
           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reply Preview</span>
           {selectedIdx === null ? (
             <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
@@ -140,7 +140,7 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
                 </button>
                 <button
                   onClick={handleUseReply}
-                  className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-100 active:scale-95 transition-all"
+                  className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black active:scale-95 transition-all"
                 >
                   {saved ? 'Saved ✓' : 'Use Reply'}
                 </button>

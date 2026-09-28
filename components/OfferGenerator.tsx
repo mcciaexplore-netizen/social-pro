@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { generateOffer, generateImageAsset, GeneratedOffer } from '../geminiService';
 import { BrandContext, ContentStatus } from '../types';
-import { CopyIcon } from './Icons';
+import { CopyIcon, CheckCircleIcon } from './Icons';
 import Stepper from './Stepper';
 import ScheduleStep from './ScheduleStep';
 
@@ -125,7 +125,7 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
       <Stepper steps={STEPS} current={step} />
 
       {step === 0 && (
-        <div className="space-y-5 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 max-w-2xl">
+        <div className="space-y-5 bg-white border border-slate-200 rounded-xl p-6 max-w-2xl">
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Product / Service Name*</label>
             <input
@@ -189,7 +189,7 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
                 <button
                   key={c}
                   onClick={() => setCta(c)}
-                  className={`px-4 py-2 rounded-full text-xs font-black transition-all ${cta === c ? 'bg-blue-600 text-white shadow-md shadow-blue-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+                  className={`px-4 py-2 rounded-full text-xs font-black transition-all ${cta === c ? 'bg-blue-600 text-white ' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
                 >
                   {c}
                 </button>
@@ -199,7 +199,7 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
           <button
             onClick={() => setStep(1)}
             disabled={!productName}
-            className="w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-4 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all"
           >
             Next
           </button>
@@ -208,7 +208,7 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
 
       {step === 1 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          <div className="space-y-6 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="space-y-6 bg-white border border-slate-200 rounded-xl p-6">
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Select Template</label>
               <div className="grid grid-cols-3 gap-3">
@@ -251,7 +251,7 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Preview</span>
             <div className={`mt-4 rounded-2xl overflow-hidden shadow-lg border border-slate-100 bg-gradient-to-br ${activeTemplate.gradient} aspect-square flex flex-col justify-between p-6 relative`}>
               {visualImage && <img src={visualImage} alt="Generated visual" className="absolute inset-0 w-full h-full object-cover opacity-90" />}
@@ -270,28 +270,28 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
 
       {step === 1 && (
         <div className="flex gap-3 max-w-2xl">
-          <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
-          <button onClick={goToPreview} className="flex-1 py-4 rounded-[1.5rem] font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">Next</button>
+          <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-lg font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
+          <button onClick={goToPreview} className="flex-1 py-4 rounded-lg font-black text-white bg-blue-600 hover:bg-blue-700 transition-all">Next</button>
         </div>
       )}
 
       {step === 2 && (
         savedStatus ? (
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 text-center py-10 space-y-4">
-            <div className="text-4xl">✅</div>
+          <div className="bg-white border border-slate-200 rounded-xl p-6 text-center py-10 space-y-4">
+            <CheckCircleIcon className="w-10 h-10 text-green-600 mx-auto" />
             <p className="font-black text-black text-lg">
               {savedStatus === 'draft' ? 'Saved as draft' : savedStatus === 'scheduled' ? 'Offer scheduled' : 'Marked as published'}
             </p>
             <button onClick={startOver} className="text-blue-600 font-black text-sm underline">Create another offer</button>
           </div>
         ) : loading ? (
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-16 text-center space-y-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-16 text-center space-y-4">
             <div className="w-10 h-10 border-3 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
             <p className="text-slate-400 font-bold italic">Writing your offer post...</p>
           </div>
         ) : offer ? (
           <div className="space-y-6">
-            <div className="bg-white border-2 border-slate-50 rounded-[2rem] p-6 shadow-sm">
+            <div className="bg-white border-2 border-slate-50 rounded-xl p-6 shadow-sm">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Generated Content</span>
                 <button onClick={() => { navigator.clipboard.writeText(fullText); alert('Copied!'); }} className="text-blue-600 flex items-center gap-2 text-xs font-black bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition-all active:scale-95">
@@ -303,8 +303,8 @@ const OfferGenerator: React.FC<Props> = ({ brand, onSave }) => {
               </div>
             </div>
             <div className="flex gap-3 max-w-2xl">
-              <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">← Edit</button>
-              <button onClick={regenerate} className="flex-1 py-4 rounded-[1.5rem] font-black text-blue-600 bg-blue-50 hover:bg-blue-100 transition-all">Regenerate</button>
+              <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-lg font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">← Edit</button>
+              <button onClick={regenerate} className="flex-1 py-4 rounded-lg font-black text-blue-600 bg-blue-50 hover:bg-blue-100 transition-all">Regenerate</button>
             </div>
             <ScheduleStep onBack={() => setStep(1)} onConfirm={handleConfirm} confirmLabel="Publish" />
           </div>

@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import { generateBroadcast } from '../geminiService';
 import { BrandContext, Contact, ContentStatus } from '../types';
-import { TrashIcon } from './Icons';
+import { TrashIcon, CheckCircleIcon } from './Icons';
 import Stepper from './Stepper';
 
 interface Props {
@@ -122,7 +122,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
 
       {step === 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl">
-          <div className="space-y-5 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="space-y-5 bg-white border border-slate-200 rounded-xl p-6">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Message Content</span>
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Subject</label>
@@ -137,7 +137,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
               <div className="flex items-center justify-between">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Message*</label>
                 <button onClick={handleDraftWithAI} disabled={drafting} className="text-[10px] font-black text-blue-600 hover:underline disabled:opacity-50">
-                  {drafting ? 'Drafting...' : '✨ Draft with AI'}
+                  {drafting ? 'Drafting...' : 'Draft with AI'}
                 </button>
               </div>
               <textarea
@@ -160,7 +160,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Call to Action</label>
               <div className="flex flex-wrap gap-2">
                 {CTAS.map(c => (
-                  <button key={c} onClick={() => setCta(c)} className={`px-4 py-2 rounded-full text-xs font-black transition-all ${cta === c ? 'bg-blue-600 text-white shadow-md shadow-blue-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                  <button key={c} onClick={() => setCta(c)} className={`px-4 py-2 rounded-full text-xs font-black transition-all ${cta === c ? 'bg-blue-600 text-white ' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
                     {c}
                   </button>
                 ))}
@@ -168,7 +168,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Preview</span>
             <div className="mt-4 bg-blue-50 p-5 rounded-2xl border border-blue-100 min-h-[220px]">
               {subject && <p className="font-black text-black mb-2">{subject}</p>}
@@ -179,7 +179,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
           </div>
 
           <div className="lg:col-span-2">
-            <button onClick={() => setStep(1)} disabled={!message} className="w-full sm:w-auto sm:min-w-[240px] bg-gradient-to-br from-blue-600 to-blue-700 text-white py-4 px-8 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all">
+            <button onClick={() => setStep(1)} disabled={!message} className="w-full sm:w-auto sm:min-w-[240px] bg-blue-600 hover:bg-blue-700 text-white py-4 px-8 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all">
               Next
             </button>
           </div>
@@ -188,7 +188,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
 
       {step === 1 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl items-start">
-          <div className="space-y-4 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="space-y-4 bg-white border border-slate-200 rounded-xl p-6">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Send To</span>
             <div className="space-y-2">
               {([
@@ -255,7 +255,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
             </div>
           </div>
 
-          <div className="space-y-4 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="space-y-4 bg-white border border-slate-200 rounded-xl p-6">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contacts ({contacts.length})</span>
               <button onClick={() => setShowAddContact(v => !v)} className="text-xs font-black text-blue-600 hover:underline">{showAddContact ? 'Close' : '+ Add Contact'}</button>
@@ -293,16 +293,16 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
           </div>
 
           <div className="lg:col-span-2 flex gap-3">
-            <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
-            <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-[1.5rem] font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">Next</button>
+            <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-lg font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
+            <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-lg font-black text-white bg-blue-600 hover:bg-blue-700 transition-all">Next</button>
           </div>
         </div>
       )}
 
       {step === 2 && (
         savedStatus ? (
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 text-center py-10 space-y-4 max-w-2xl">
-            <div className="text-4xl">✅</div>
+          <div className="bg-white border border-slate-200 rounded-xl p-6 text-center py-10 space-y-4 max-w-2xl">
+            <CheckCircleIcon className="w-10 h-10 text-green-600 mx-auto" />
             <p className="font-black text-black text-lg">
               {savedStatus === 'scheduled' ? 'Broadcast scheduled' : 'Broadcast sent'}
             </p>
@@ -310,7 +310,7 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
           </div>
         ) : (
           <div className="space-y-6 max-w-2xl">
-            <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 space-y-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Preview Message</span>
               <div className="bg-blue-50 p-5 rounded-2xl border border-blue-100 relative">
                 <p className="text-sm leading-relaxed whitespace-pre-wrap text-black font-medium">{fullMessage}</p>
@@ -325,8 +325,8 @@ const BroadcastHelper: React.FC<Props> = ({ brand, onSave, contacts, onAddContac
               </div>
             </div>
             <div className="flex gap-3">
-              <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
-              <button onClick={handleSend} className="flex-1 py-4 rounded-[1.5rem] font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">
+              <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-lg font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
+              <button onClick={handleSend} className="flex-1 py-4 rounded-lg font-black text-white bg-blue-600 hover:bg-blue-700 transition-all">
                 {sendMode === 'now' ? 'Send Broadcast' : 'Schedule Broadcast'}
               </button>
             </div>

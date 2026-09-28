@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { generateTodayPost, generateImagePromptForPost, GeneratedPost } from '../geminiService';
 import { BrandContext, HistoryItem, ImagePrompt } from '../types';
-import { CopyIcon } from './Icons';
+import { CopyIcon, CheckCircleIcon } from './Icons';
 import Stepper from './Stepper';
 import ScheduleStep from './ScheduleStep';
 import { ContentStatus } from '../types';
@@ -22,7 +22,7 @@ const Chip: React.FC<{ label: string, active: boolean, onClick: () => void }> = 
   <button
     type="button"
     onClick={onClick}
-    className={`px-4 py-2 rounded-full text-xs font-black transition-all ${active ? 'bg-blue-600 text-white shadow-md shadow-blue-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
+    className={`px-4 py-2 rounded-full text-xs font-black transition-all ${active ? 'bg-blue-600 text-white ' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
   >
     {label}
   </button>
@@ -102,7 +102,7 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
 
       {step === 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-          <div className="space-y-5 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="space-y-5 bg-white border border-slate-200 rounded-xl p-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Post Objective</label>
               <div className="flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
             <button
               onClick={handleGenerate}
               disabled={loading}
-              className="w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-5 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
             >
               {loading ? (
                 <>
@@ -150,7 +150,7 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
             </button>
           </div>
 
-          <div className="bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6">
+          <div className="bg-white border border-slate-200 rounded-xl p-6">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Live Post Preview</span>
             <div className="mt-4 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-5 text-white min-h-[220px] flex flex-col justify-between shadow-lg">
               <div>
@@ -180,7 +180,7 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
             </button>
           </div>
 
-          <div className="bg-white border-2 border-slate-50 rounded-[2rem] p-6 shadow-sm">
+          <div className="bg-white border-2 border-slate-50 rounded-xl p-6 shadow-sm">
             {activeTab === 'caption' ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
@@ -224,7 +224,7 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
                     </button>
                   )}
                 </div>
-                <div className="bg-slate-900 text-green-400 p-6 rounded-2xl text-[13px] font-mono overflow-auto border-4 border-slate-800 shadow-2xl min-h-[240px] flex items-center ring-4 ring-slate-900">
+                <div className="bg-slate-900 text-green-400 p-6 rounded-xl text-[13px] font-mono overflow-auto min-h-[240px] flex items-center">
                   {imagePrompt ? (
                     <pre className="whitespace-pre-wrap w-full leading-relaxed">
                       {JSON.stringify(imagePrompt, null, 2)}
@@ -241,16 +241,16 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
           </div>
 
           <div className="mt-6 flex gap-3">
-            <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
-            <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-[1.5rem] font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">Next</button>
+            <button onClick={() => setStep(0)} className="flex-1 py-4 rounded-lg font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
+            <button onClick={() => setStep(2)} className="flex-1 py-4 rounded-lg font-black text-white bg-blue-600 hover:bg-blue-700 transition-all">Next</button>
           </div>
         </div>
       )}
 
       {step === 2 && post && (
         savedStatus ? (
-          <div className="animate-in fade-in duration-300 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 text-center py-10 space-y-4">
-            <div className="text-4xl">✅</div>
+          <div className="animate-in fade-in duration-300 bg-white border border-slate-200 rounded-xl p-6 text-center py-10 space-y-4">
+            <CheckCircleIcon className="w-10 h-10 text-green-600 mx-auto" />
             <p className="font-black text-black text-lg">
               {savedStatus === 'draft' ? 'Saved as draft' : savedStatus === 'scheduled' ? 'Post scheduled' : 'Marked as published'}
             </p>

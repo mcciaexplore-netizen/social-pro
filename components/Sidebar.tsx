@@ -23,8 +23,8 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
       <nav className="flex-1 space-y-1">
         <button
           onClick={() => onNavigate('dashboard')}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-            view === 'dashboard' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+            view === 'dashboard' ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
           }`}
         >
           <HomeIcon className="w-5 h-5" />
@@ -39,11 +39,11 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
           <button
             key={tool.view}
             onClick={() => onNavigate(tool.view)}
-            className={`w-full flex items-center gap-3 pl-8 pr-4 py-2.5 rounded-2xl text-[13px] font-bold whitespace-nowrap transition-all ${
-              view === tool.view ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            className={`w-full flex items-center gap-3 pl-8 pr-4 py-2 rounded-lg text-[13px] font-bold whitespace-nowrap transition-colors ${
+              view === tool.view ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
-            <span className="text-base leading-none shrink-0">{tool.icon}</span>
+            <tool.icon className="w-4 h-4 shrink-0" />
             {tool.title}
           </button>
         ))}
@@ -51,8 +51,8 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
         <div className="pt-3 space-y-1">
           <button
             onClick={() => onNavigate('content', 'content')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-              view === 'content' && contentSegment === 'content' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+              view === 'content' && contentSegment === 'content' ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
             <ContentIcon className="w-5 h-5" />
@@ -60,8 +60,8 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
           </button>
           <button
             onClick={() => onNavigate('content', 'activity')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-              view === 'content' && contentSegment === 'activity' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+              view === 'content' && contentSegment === 'activity' ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
             <HistoryIcon className="w-5 h-5" />
@@ -69,8 +69,8 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
           </button>
           <button
             onClick={() => onNavigate('settings')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-              view === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+              view === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
             <SettingsIcon className="w-5 h-5" />
@@ -79,7 +79,7 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
         </div>
       </nav>
 
-      <div className="mt-6 p-5 rounded-[1.75rem] bg-gradient-to-br from-blue-600 to-blue-800 text-white">
+      <div className="mt-6 p-4 rounded-lg bg-blue-600 text-white">
         <p className="font-black tracking-tight">MCCIA</p>
         <p className="text-xs opacity-80 font-medium mt-1 leading-snug">Empowering Industries Through Innovation</p>
       </div>

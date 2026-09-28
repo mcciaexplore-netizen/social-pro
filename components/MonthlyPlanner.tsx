@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { generateMonthlyPlan } from '../geminiService';
 import { BrandContext, MonthlyPlanItem } from '../types';
+import { CalendarIcon } from './Icons';
 
 interface Props {
   brand: BrandContext;
@@ -25,15 +26,17 @@ const MonthlyPlanner: React.FC<Props> = ({ brand }) => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm text-center">
-        <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-6 shadow-sm">📅</div>
+      <div className="bg-white p-8 rounded-xl border border-slate-200 text-center">
+        <div className="w-12 h-12 bg-slate-100 text-blue-600 rounded-lg flex items-center justify-center mx-auto mb-5">
+          <CalendarIcon className="w-6 h-6" />
+        </div>
         <h3 className="text-xl font-black text-slate-900 mb-2">Monthly Content Outline</h3>
         <p className="text-slate-500 mb-8 leading-relaxed font-medium">Generate a calendar of what to post. We only suggest topics to save tokens.</p>
         {!plan.length && (
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-gradient-to-br from-blue-600 to-blue-700 text-white py-5 rounded-[1.5rem] font-black shadow-xl shadow-blue-100 disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
           >
             {loading ? (
               <>
@@ -51,7 +54,7 @@ const MonthlyPlanner: React.FC<Props> = ({ brand }) => {
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 space-y-3">
           {plan.map((item, idx) => (
             <div key={idx} className="p-4 border border-slate-100 rounded-2xl flex gap-4 items-start bg-white shadow-sm">
-              <div className="bg-indigo-50 text-indigo-700 font-black px-3 py-1.5 rounded-xl text-xs shrink-0 w-16 text-center">
+              <div className="bg-blue-50 text-blue-700 font-black px-3 py-1.5 rounded-lg text-xs shrink-0 w-16 text-center">
                 {item.date}
               </div>
               <div>

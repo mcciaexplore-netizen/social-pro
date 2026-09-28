@@ -197,7 +197,7 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
           <div className="mt-10 space-y-3">
             <button
               onClick={goNext}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-[1.5rem] font-black text-lg shadow-xl hover:shadow-blue-200 active:scale-95 hover:-translate-y-0.5 transition-all"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black text-lg active:scale-95 hover:-translate-y-0.5 transition-all"
             >
               {isLast ? 'Get Started' : 'Continue'}
             </button>
