@@ -44,6 +44,39 @@ const matchesTab = (item: HistoryItem, tab: TypeTab) => {
   return item.type === tab;
 };
 
+const STATUS_OPTIONS: ContentStatus[] = ['draft', 'scheduled', 'published'];
+
+const StatusBadge: React.FC<{ status: ContentStatus, onChange: (s: ContentStatus) => void }> = ({ status, onChange }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(v => !v)}
+        className={`flex items-center gap-1 px-3 py-1 rounded-full text-[10px] uppercase font-black transition-all ring-1 ring-current ${STATUS_STYLE[status]}`}
+      >
+        {status}
+        <span className="text-[8px]">▾</span>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute left-0 top-full mt-1 z-20 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden min-w-[110px]">
+            {STATUS_OPTIONS.map(s => (
+              <button
+                key={s}
+                onClick={() => { onChange(s); setOpen(false); }}
+                className={`w-full text-left px-3 py-2 text-[10px] uppercase font-black transition-all ${s === status ? STATUS_STYLE[s] : 'text-slate-500 hover:bg-slate-50'}`}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 const MetricsRow: React.FC<{ item: HistoryItem, onUpdate: (id: string, updates: Partial<HistoryItem>) => void }> = ({ item, onUpdate }) => {
   const [editing, setEditing] = useState(false);
   const [views, setViews] = useState(item.metrics?.views?.toString() || '');
@@ -182,15 +215,7 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
-                        {(['draft', 'scheduled', 'published'] as ContentStatus[]).map(s => (
-                          <button
-                            key={s}
-                            onClick={() => onUpdate(item.id, { status: s })}
-                            className={`px-3 py-1 rounded-full text-[10px] uppercase font-black transition-all ${status === s ? STATUS_STYLE[s] + ' ring-1 ring-current' : 'text-slate-300 hover:bg-slate-50'}`}
-                          >
-                            {s}
-                          </button>
-                        ))}
+                        <StatusBadge status={status} onChange={s => onUpdate(item.id, { status: s })} />
                       </div>
                       <span className="text-[10px] font-bold text-slate-400 tracking-tighter uppercase">
                         {status === 'scheduled' ? 'Scheduled: ' : ''}{new Date(displayDate).toLocaleDateString()}
