@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrandContext, HistoryItem, View } from './types';
 import Onboarding from './components/Onboarding';
+import OnboardingWizard from './components/OnboardingWizard';
 import Dashboard from './components/Dashboard';
 import Tools from './components/Tools';
 import ContentHub from './components/ContentHub';
@@ -108,7 +109,7 @@ const App: React.FC = () => {
     </div>
   );
 
-  if (!brand) return <Onboarding onSave={handleSaveBrand} />;
+  if (!brand) return <OnboardingWizard onSave={handleSaveBrand} />;
 
   // Settings replaces the whole screen with the same standalone profile page
   // used on first run - no header/nav around it, just the form.
