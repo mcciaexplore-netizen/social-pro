@@ -33,33 +33,56 @@ const getAI = (userKey?: string) => {
   return new GoogleGenAI({ apiKey: key });
 };
 
+export interface GeneratedPost {
+  headline: string;
+  caption: string;
+  hashtags: string[];
+  cta: string;
+}
+
 export const generateTodayPost = async (
   brand: BrandContext,
   history: HistoryItem[],
   objective?: string,
   platform?: string,
-  brief?: string
-) => {
+  brief?: string,
+  postTone?: string
+): Promise<GeneratedPost> => {
   const ai = getAI(brand.apiKey);
   const previousThemes = history.slice(0, 5).map(h => h.content).join("\n");
 
-  const prompt = `Give me a post for today.
+  const prompt = `Create a social media post.
   ${objective ? `Objective: ${objective}` : ''}
   ${platform ? `Target platform: ${platform}` : ''}
-  ${brief ? `What the post should be about: ${brief}` : ''}
+  ${postTone ? `Tone for this specific post: ${postTone}` : ''}
+  ${brief ? `What the post should be about: ${brief}` : 'Pick a relevant topic for today.'}
   Recent posts to avoid repeating: ${previousThemes}
-  Output format:
-  [CAPTION]
-  [HASHTAGS]
-  [CTA]
-  Keep caption under 100 words.`;
+  Keep the caption under 100 words.`;
 
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: prompt,
-    config: { systemInstruction: getSystemInstruction(brand) }
+    config: {
+      systemInstruction: getSystemInstruction(brand),
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          headline: { type: Type.STRING },
+          caption: { type: Type.STRING },
+          hashtags: { type: Type.ARRAY, items: { type: Type.STRING } },
+          cta: { type: Type.STRING }
+        },
+        required: ["headline", "caption", "hashtags", "cta"]
+      }
+    }
   });
-  return response.text || "";
+  const text = response.text || "{}";
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return { headline: '', caption: text, hashtags: [], cta: '' };
+  }
 };
 
 export const generateImagePromptForPost = async (brand: BrandContext, postContent: string) => {
