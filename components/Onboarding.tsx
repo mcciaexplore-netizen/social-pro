@@ -52,6 +52,7 @@ const FieldError: React.FC<{ message?: string }> = ({ message }) =>
 const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
   const [formData, setFormData] = useState<BrandContext>(initialData || {
     businessName: '',
+    ownerName: '',
     category: '',
     city: '',
     language: 'English',
@@ -161,6 +162,18 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
               <SectionHeading>Business Details</SectionHeading>
 
               <div className="space-y-5 bg-slate-50 border border-slate-100 rounded-2xl p-5">
+                <div className="space-y-2">
+                  <label htmlFor="ownerName" className={labelBase}>Your Name</label>
+                  <input
+                    id="ownerName"
+                    className={`${inputBase} ${inputOk}`}
+                    placeholder="e.g. Ramesh Gupta"
+                    autoComplete="name"
+                    value={formData.ownerName || ''}
+                    onChange={e => setFormData({ ...formData, ownerName: e.target.value })}
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <label htmlFor="businessName" className={labelBase}>Business Name*</label>
                   <input

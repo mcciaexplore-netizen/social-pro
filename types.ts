@@ -2,8 +2,21 @@
 export type Language = 'English' | 'Hinglish' | 'Hindi';
 export type Tone = 'Professional' | 'Friendly' | 'Local';
 
+export type View =
+  | 'dashboard'
+  | 'tools'
+  | 'content'
+  | 'post'
+  | 'offer'
+  | 'reply'
+  | 'broadcast'
+  | 'prompt'
+  | 'planner'
+  | 'settings';
+
 export interface BrandContext {
   businessName: string;
+  ownerName?: string;
   category: string;
   city: string;
   language: Language;
