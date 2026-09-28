@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrandContext, View } from '../types';
-import { ChevronLeftIcon, SearchIcon, BellIcon } from './Icons';
+import { ChevronLeftIcon, SearchIcon, BellIcon, ChevronDownIcon } from './Icons';
 
 interface Props {
   view: View;
@@ -79,6 +79,7 @@ const TopBar: React.FC<Props> = ({ view, brand, searchQuery, onSearchChange, onB
             <span className="block text-xs font-black text-slate-800 truncate max-w-[9rem]">{displayName || 'Your Business'}</span>
             <span className="block text-[10px] font-bold text-slate-300 uppercase tracking-widest">MCCIA</span>
           </span>
+          <ChevronDownIcon className="hidden sm:block w-3.5 h-3.5 text-slate-300 shrink-0" />
         </button>
       </div>
     </header>
