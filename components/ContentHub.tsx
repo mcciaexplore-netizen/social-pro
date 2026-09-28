@@ -33,7 +33,7 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
           <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
             {segment === 'content' ? 'My Content' : 'Activity Log'}
           </h2>
-          <p className="text-sm font-medium text-slate-400">
+          <p className="text-sm font-medium text-black">
             {segment === 'content' ? 'Everything you\'ve generated, ready to reuse' : 'Cloud-synced history of every action'}
           </p>
         </div>

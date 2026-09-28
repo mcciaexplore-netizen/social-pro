@@ -26,7 +26,7 @@ const Dashboard: React.FC<Props> = ({ setView, brand }) => {
         <div className="relative z-10 max-w-lg">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Welcome to</p>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter">MCCIA Socials</h2>
-          <p className="text-slate-500 mt-3 font-medium leading-relaxed">
+          <p className="text-black mt-3 font-medium leading-relaxed">
             Create, connect and share — all in one place for {brand.businessName || 'your business'}.
           </p>
           <button
@@ -71,8 +71,8 @@ const Dashboard: React.FC<Props> = ({ setView, brand }) => {
       <div className="space-y-4">
         <div className="flex items-end justify-between ml-1">
           <div>
-            <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.15em]">Your Tools</h3>
-            <p className="text-sm text-slate-400 font-medium">Choose a tool to get started</p>
+            <h3 className="text-xs font-black text-black uppercase tracking-[0.15em]">Your Tools</h3>
+            <p className="text-sm text-black font-medium">Choose a tool to get started</p>
           </div>
         </div>
         <ToolsGrid setView={setView} />
