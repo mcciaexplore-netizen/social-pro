@@ -4,6 +4,8 @@ import { generateTodayPost, generateImagePromptForPost, GeneratedPost } from '..
 import { BrandContext, HistoryItem, ImagePrompt } from '../types';
 import { CopyIcon } from './Icons';
 import Stepper from './Stepper';
+import ScheduleStep from './ScheduleStep';
+import { ContentStatus } from '../types';
 
 interface Props {
   brand: BrandContext;
@@ -38,9 +40,7 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'caption' | 'visual'>('caption');
 
-  const [scheduleMode, setScheduleMode] = useState<'draft' | 'scheduled' | 'published'>('draft');
-  const [scheduleDate, setScheduleDate] = useState('');
-  const [saved, setSaved] = useState(false);
+  const [savedStatus, setSavedStatus] = useState<ContentStatus | null>(null);
 
   const handleGenerate = async () => {
     setLoading(true);
@@ -71,27 +71,24 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
     }
   };
 
-  const handleConfirmSchedule = () => {
+  const handleConfirmSchedule = (status: ContentStatus, scheduledAt?: number) => {
     if (!post) return;
-    const scheduledAt = scheduleMode === 'scheduled' && scheduleDate ? new Date(scheduleDate).getTime() : undefined;
     onSave({
       type: 'post',
       content: fullText,
-      status: scheduleMode,
+      status,
       scheduledAt,
       meta: { objective, tone, platform, headline: post.headline, hashtags: post.hashtags, cta: post.cta, imagePrompt }
     });
-    setSaved(true);
+    setSavedStatus(status);
   };
 
   const startOver = () => {
     setStep(0);
     setPost(null);
     setImagePrompt(null);
-    setSaved(false);
+    setSavedStatus(null);
     setBrief('');
-    setScheduleMode('draft');
-    setScheduleDate('');
   };
 
   return (
@@ -251,49 +248,17 @@ const PostGenerator: React.FC<Props> = ({ brand, history, onSave }) => {
       )}
 
       {step === 2 && post && (
-        <div className="animate-in fade-in duration-300 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 space-y-6">
-          {saved ? (
-            <div className="text-center py-10 space-y-4">
-              <div className="text-4xl">✅</div>
-              <p className="font-black text-black text-lg">
-                {scheduleMode === 'draft' ? 'Saved as draft' : scheduleMode === 'scheduled' ? 'Post scheduled' : 'Marked as published'}
-              </p>
-              <button onClick={startOver} className="text-blue-600 font-black text-sm underline">Create another post</button>
-            </div>
-          ) : (
-            <>
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">When should this go out?</span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {(['draft', 'scheduled', 'published'] as const).map(mode => (
-                  <button
-                    key={mode}
-                    onClick={() => setScheduleMode(mode)}
-                    className={`p-4 rounded-2xl border-2 text-left transition-all ${scheduleMode === mode ? 'border-blue-500 bg-blue-50' : 'border-slate-100 bg-white hover:border-slate-200'}`}
-                  >
-                    <p className="font-black text-black capitalize">{mode === 'draft' ? 'Save as Draft' : mode === 'scheduled' ? 'Schedule Later' : 'Already Posted'}</p>
-                    <p className="text-xs text-slate-400 font-medium mt-1">
-                      {mode === 'draft' ? 'Keep editing later' : mode === 'scheduled' ? 'Pick a date/time' : 'Mark as published now'}
-                    </p>
-                  </button>
-                ))}
-              </div>
-
-              {scheduleMode === 'scheduled' && (
-                <input
-                  type="datetime-local"
-                  value={scheduleDate}
-                  onChange={e => setScheduleDate(e.target.value)}
-                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3.5 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-bold"
-                />
-              )}
-
-              <div className="flex gap-3 pt-2">
-                <button onClick={() => setStep(1)} className="flex-1 py-4 rounded-[1.5rem] font-black text-slate-500 bg-slate-100 hover:bg-slate-200 transition-all">Back</button>
-                <button onClick={handleConfirmSchedule} className="flex-1 py-4 rounded-[1.5rem] font-black text-white bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all">Confirm</button>
-              </div>
-            </>
-          )}
-        </div>
+        savedStatus ? (
+          <div className="animate-in fade-in duration-300 bg-white border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] p-6 text-center py-10 space-y-4">
+            <div className="text-4xl">✅</div>
+            <p className="font-black text-black text-lg">
+              {savedStatus === 'draft' ? 'Saved as draft' : savedStatus === 'scheduled' ? 'Post scheduled' : 'Marked as published'}
+            </p>
+            <button onClick={startOver} className="text-blue-600 font-black text-sm underline">Create another post</button>
+          </div>
+        ) : (
+          <ScheduleStep onBack={() => setStep(1)} onConfirm={handleConfirmSchedule} />
+        )
       )}
     </div>
   );

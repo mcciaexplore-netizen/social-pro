@@ -116,15 +116,54 @@ export const generateImagePromptForPost = async (brand: BrandContext, postConten
   }
 };
 
-export const generateOffer = async (brand: BrandContext, productName: string, details: string) => {
+export interface OfferInput {
+  productName: string;
+  offerTitle?: string;
+  discount?: string;
+  description?: string;
+  validUntil?: string;
+  targetAudience?: string;
+  cta?: string;
+}
+
+export interface GeneratedOffer {
+  caption: string;
+  hashtags: string[];
+}
+
+export const generateOffer = async (brand: BrandContext, input: OfferInput): Promise<GeneratedOffer> => {
   const ai = getAI(brand.apiKey);
-  const prompt = `Create an offer for "${productName}". Details: ${details}. Provide WhatsApp and Instagram versions.`;
+  const prompt = `Create a promotional offer post for "${input.productName}".
+  ${input.offerTitle ? `Offer title: ${input.offerTitle}` : ''}
+  ${input.discount ? `Discount: ${input.discount}` : ''}
+  ${input.description ? `Details: ${input.description}` : ''}
+  ${input.validUntil ? `Valid until: ${input.validUntil}` : ''}
+  ${input.targetAudience ? `Target audience: ${input.targetAudience}` : ''}
+  ${input.cta ? `Call to action: ${input.cta}` : ''}
+  Write one caption that works for both WhatsApp and Instagram.`;
+
   const response = await ai.models.generateContent({
     model: 'gemini-3-flash-preview',
     contents: prompt,
-    config: { systemInstruction: getSystemInstruction(brand) }
+    config: {
+      systemInstruction: getSystemInstruction(brand),
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          caption: { type: Type.STRING },
+          hashtags: { type: Type.ARRAY, items: { type: Type.STRING } }
+        },
+        required: ["caption", "hashtags"]
+      }
+    }
   });
-  return response.text || "";
+  const text = response.text || "{}";
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return { caption: text, hashtags: [] };
+  }
 };
 
 export const generateReply = async (brand: BrandContext, customerMessage: string) => {
