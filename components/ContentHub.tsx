@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { HistoryItem } from '../types';
-import { TrashIcon, ContentIcon, HistoryIcon } from './Icons';
+import React, { useMemo, useState } from 'react';
+import { ContentStatus, HistoryItem } from '../types';
+import { TrashIcon, ContentIcon, HistoryIcon, SearchIcon } from './Icons';
 
 type Segment = 'content' | 'activity';
+type TypeTab = 'all' | 'post' | 'offer' | 'message' | 'prompt';
 
 interface Props {
   history: HistoryItem[];
@@ -10,7 +11,16 @@ interface Props {
   onSegmentChange: (segment: Segment) => void;
   onExport: () => void;
   onDelete: (id: string) => void;
+  onUpdate: (id: string, updates: Partial<HistoryItem>) => void;
 }
+
+const TYPE_TABS: { key: TypeTab, label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'post', label: 'Posts' },
+  { key: 'offer', label: 'Offers' },
+  { key: 'message', label: 'Messages' },
+  { key: 'prompt', label: 'Images' }
+];
 
 const FILTERS = ['all', 'post', 'offer', 'reply', 'broadcast', 'prompt'] as const;
 
@@ -22,19 +32,91 @@ const TYPE_DOT: Record<string, string> = {
   prompt: 'bg-pink-500'
 };
 
-const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExport, onDelete }) => {
+const STATUS_STYLE: Record<ContentStatus, string> = {
+  draft: 'bg-slate-100 text-slate-500',
+  scheduled: 'bg-amber-50 text-amber-600',
+  published: 'bg-green-50 text-green-600'
+};
+
+const matchesTab = (item: HistoryItem, tab: TypeTab) => {
+  if (tab === 'all') return true;
+  if (tab === 'message') return item.type === 'reply' || item.type === 'broadcast';
+  return item.type === tab;
+};
+
+const MetricsRow: React.FC<{ item: HistoryItem, onUpdate: (id: string, updates: Partial<HistoryItem>) => void }> = ({ item, onUpdate }) => {
+  const [editing, setEditing] = useState(false);
+  const [views, setViews] = useState(item.metrics?.views?.toString() || '');
+  const [likes, setLikes] = useState(item.metrics?.likes?.toString() || '');
+  const [comments, setComments] = useState(item.metrics?.comments?.toString() || '');
+
+  if (item.status !== 'published') return null;
+
+  if (editing) {
+    return (
+      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100">
+        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Log performance:</span>
+        <input value={views} onChange={e => setViews(e.target.value)} placeholder="Views" type="number" className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-black" />
+        <input value={likes} onChange={e => setLikes(e.target.value)} placeholder="Likes" type="number" className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-black" />
+        <input value={comments} onChange={e => setComments(e.target.value)} placeholder="Comments" type="number" className="w-24 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-black" />
+        <button
+          onClick={() => {
+            onUpdate(item.id, { metrics: { views: Number(views) || undefined, likes: Number(likes) || undefined, comments: Number(comments) || undefined } });
+            setEditing(false);
+          }}
+          className="text-xs font-black text-white bg-blue-600 px-3 py-1.5 rounded-lg"
+        >
+          Save
+        </button>
+        <button onClick={() => setEditing(false)} className="text-xs font-black text-slate-400">Cancel</button>
+      </div>
+    );
+  }
+
+  const hasMetrics = item.metrics && (item.metrics.views || item.metrics.likes || item.metrics.comments);
+  return (
+    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+      {hasMetrics ? (
+        <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
+          {item.metrics?.views != null && <span>👁 {item.metrics.views.toLocaleString()}</span>}
+          {item.metrics?.likes != null && <span>♥ {item.metrics.likes.toLocaleString()}</span>}
+          {item.metrics?.comments != null && <span>💬 {item.metrics.comments.toLocaleString()}</span>}
+        </div>
+      ) : (
+        <span className="text-xs text-slate-300 italic font-medium">No performance logged yet</span>
+      )}
+      <button onClick={() => setEditing(true)} className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">
+        {hasMetrics ? 'Edit' : '+ Log Performance'}
+      </button>
+    </div>
+  );
+};
+
+const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExport, onDelete, onUpdate }) => {
   const [filter, setFilter] = useState<typeof FILTERS[number]>('all');
-  const filtered = filter === 'all' ? history : history.filter(item => item.type === filter);
+  const [typeTab, setTypeTab] = useState<TypeTab>('all');
+  const [search, setSearch] = useState('');
+
+  const contentFiltered = useMemo(() => {
+    let items = history.filter(item => matchesTab(item, typeTab));
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      items = items.filter(item => item.content.toLowerCase().includes(q));
+    }
+    return items;
+  }, [history, typeTab, search]);
+
+  const activityFiltered = filter === 'all' ? history : history.filter(item => item.type === filter);
 
   return (
     <div className="space-y-6 animate-slide-up">
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+          <h2 className="text-3xl font-black text-black tracking-tighter">
             {segment === 'content' ? 'My Content' : 'Activity Log'}
           </h2>
           <p className="text-sm font-medium text-black">
-            {segment === 'content' ? 'Everything you\'ve generated, ready to reuse' : 'Cloud-synced history of every action'}
+            {segment === 'content' ? 'Manage and track all your content in one place' : 'Cloud-synced history of every action'}
           </p>
         </div>
         {segment === 'activity' && history.length > 0 && (
@@ -59,69 +141,136 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
         </button>
       </div>
 
-      {history.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          {FILTERS.map(f => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
-            >
-              {f}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {filtered.length === 0 ? (
-        <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
-          <div className="text-5xl mb-4 opacity-10">📁</div>
-          <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
-        </div>
-      ) : segment === 'content' ? (
-        <div className="space-y-4">
-          {filtered.map(item => (
-            <div key={item.id} className="p-6 border border-slate-100 rounded-[2rem] bg-white shadow-sm hover:shadow-md transition-all">
-              <div className="flex justify-between items-center mb-4">
-                <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
-                <span className="text-[10px] font-bold text-slate-300 tracking-tighter uppercase">{new Date(item.timestamp).toLocaleDateString()}</span>
-              </div>
-              <p className="text-[15px] text-slate-700 whitespace-pre-wrap line-clamp-4 font-bold leading-relaxed">{item.content}</p>
-              <div className="mt-5 flex justify-end items-center gap-5">
+      {segment === 'content' ? (
+        <>
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+              {TYPE_TABS.map(t => (
                 <button
-                  onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
-                  className="text-slate-300 hover:text-red-500 transition-colors"
-                  aria-label="Delete"
+                  key={t.key}
+                  onClick={() => setTypeTab(t.key)}
+                  className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${typeTab === t.key ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
                 >
-                  <TrashIcon className="w-4 h-4" />
+                  {t.label}
                 </button>
-                <button onClick={() => { navigator.clipboard.writeText(item.content); alert('Copied!'); }} className="text-xs font-black text-blue-600 hover:underline">Copy Again</button>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="relative w-full sm:w-64 shrink-0">
+              <SearchIcon className="w-4 h-4 text-slate-300 absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Search content..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-sm font-medium text-black placeholder:text-slate-300 outline-none focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-50 transition-all"
+              />
+            </div>
+          </div>
+
+          {contentFiltered.length === 0 ? (
+            <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
+              <div className="text-5xl mb-4 opacity-10">📁</div>
+              <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {contentFiltered.map(item => {
+                const status: ContentStatus = item.status || 'draft';
+                const isImage = item.type === 'prompt' && item.meta?.kind === 'image';
+                const displayDate = status === 'scheduled' && item.scheduledAt ? item.scheduledAt : item.timestamp;
+                return (
+                  <div key={item.id} className="p-6 border border-slate-200 shadow-md shadow-slate-100 rounded-[2rem] bg-white hover:shadow-lg transition-all">
+                    <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
+                        {(['draft', 'scheduled', 'published'] as ContentStatus[]).map(s => (
+                          <button
+                            key={s}
+                            onClick={() => onUpdate(item.id, { status: s })}
+                            className={`px-3 py-1 rounded-full text-[10px] uppercase font-black transition-all ${status === s ? STATUS_STYLE[s] + ' ring-1 ring-current' : 'text-slate-300 hover:bg-slate-50'}`}
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-bold text-slate-400 tracking-tighter uppercase">
+                        {status === 'scheduled' ? 'Scheduled: ' : ''}{new Date(displayDate).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    {isImage ? (
+                      <div className="flex gap-4">
+                        <img src={item.content} alt="Design" className="w-24 h-24 rounded-xl object-cover shrink-0" />
+                        <p className="text-sm text-black font-bold leading-relaxed line-clamp-4">{item.meta?.prompt || 'Generated design'}</p>
+                      </div>
+                    ) : (
+                      <p className="text-[15px] text-black whitespace-pre-wrap line-clamp-4 font-bold leading-relaxed">{item.content}</p>
+                    )}
+
+                    <MetricsRow item={item} onUpdate={onUpdate} />
+
+                    <div className="mt-4 flex justify-end items-center gap-5">
+                      <button
+                        onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
+                        className="text-slate-300 hover:text-red-500 transition-colors"
+                        aria-label="Delete"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                      </button>
+                      {!isImage && (
+                        <button onClick={() => { navigator.clipboard.writeText(item.content); alert('Copied!'); }} className="text-xs font-black text-blue-600 hover:underline">Copy Again</button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       ) : (
-        <div className="space-y-2">
-          {filtered.map(item => {
-            const d = new Date(item.timestamp);
-            return (
-              <div key={item.id} className="flex items-center gap-4 p-4 border border-slate-100 rounded-2xl bg-white shadow-sm">
-                <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${TYPE_DOT[item.type] || 'bg-slate-400'}`}></span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-slate-800 truncate">{item.content.replace(/\n/g, ' ')}</p>
-                  <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{item.type} · {d.toLocaleDateString()} {d.toLocaleTimeString()}</p>
-                </div>
+        <>
+          {history.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+              {FILTERS.map(f => (
                 <button
-                  onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
-                  className="text-slate-300 hover:text-red-500 transition-colors shrink-0"
-                  aria-label="Delete"
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
                 >
-                  <TrashIcon className="w-4 h-4" />
+                  {f}
                 </button>
-              </div>
-            );
-          })}
-        </div>
+              ))}
+            </div>
+          )}
+
+          {activityFiltered.length === 0 ? (
+            <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
+              <div className="text-5xl mb-4 opacity-10">📁</div>
+              <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {activityFiltered.map(item => {
+                const d = new Date(item.timestamp);
+                return (
+                  <div key={item.id} className="flex items-center gap-4 p-4 border border-slate-100 rounded-2xl bg-white shadow-sm">
+                    <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${TYPE_DOT[item.type] || 'bg-slate-400'}`}></span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-black truncate">{item.type === 'prompt' && item.meta?.kind === 'image' ? (item.meta?.prompt || 'Generated design') : item.content.replace(/\n/g, ' ')}</p>
+                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{item.type} · {d.toLocaleDateString()} {d.toLocaleTimeString()}</p>
+                    </div>
+                    <button
+                      onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
+                      className="text-slate-300 hover:text-red-500 transition-colors shrink-0"
+                      aria-label="Delete"
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

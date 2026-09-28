@@ -151,6 +151,7 @@ const App: React.FC = () => {
           onSegmentChange={setContentSegment}
           onExport={exportToCSV}
           onDelete={handleDeleteHistory}
+          onUpdate={handleUpdateHistory}
         />
       );
       case 'post': return <PostGenerator brand={brand} history={history} onSave={addToHistory} />;
