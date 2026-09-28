@@ -6,6 +6,7 @@ import {
   setDoc,
   getDoc,
   deleteDoc,
+  updateDoc,
   collection,
   addDoc,
   query,
@@ -15,7 +16,7 @@ import {
   Timestamp,
   Firestore
 } from "firebase/firestore";
-import { BrandContext, HistoryItem } from "./types";
+import { BrandContext, HistoryItem, Contact } from "./types";
 
 /**
  * Robust Environment Variable Loader
@@ -301,6 +302,81 @@ export const getHistoryFromCloud = async (): Promise<HistoryItem[]> => {
   } catch (error) {
     console.error("History sync error:", error);
   }
-  
+
   return localHistory;
+};
+
+export const updateHistoryItemFields = async (id: string, updates: Partial<HistoryItem>) => {
+  const localHistory: HistoryItem[] = JSON.parse(localStorage.getItem('mccia_history') || '[]');
+  const updated = localHistory.map(item => item.id === id ? { ...item, ...updates } : item);
+  localStorage.setItem('mccia_history', JSON.stringify(updated));
+
+  if (!db || id.startsWith('item_')) return;
+
+  const clientId = getClientId();
+  try {
+    await updateDoc(doc(db, "users", clientId, "history", id), updates as any);
+  } catch (error) {
+    console.error("Cloud update failed:", error);
+  }
+};
+
+export const getContacts = async (): Promise<Contact[]> => {
+  const localContacts: Contact[] = JSON.parse(localStorage.getItem('mccia_contacts') || '[]');
+  if (!db) return localContacts;
+
+  const clientId = getClientId();
+  try {
+    const offlineItems = localContacts.filter(c => c.id.startsWith('contact_'));
+    if (offlineItems.length > 0) {
+      await Promise.all(offlineItems.map(async (c) => {
+        const { id, ...data } = c;
+        await addDoc(collection(db!, "users", clientId, "contacts"), data);
+      }));
+    }
+
+    const snap = await getDocs(collection(db, "users", clientId, "contacts"));
+    const cloudContacts = snap.docs.map(d => ({ id: d.id, ...d.data() } as Contact));
+    if (cloudContacts.length > 0) {
+      localStorage.setItem('mccia_contacts', JSON.stringify(cloudContacts));
+      return cloudContacts;
+    }
+  } catch (error) {
+    console.error("Contacts sync error:", error);
+  }
+  return localContacts;
+};
+
+export const addContact = async (contact: Omit<Contact, 'id'>): Promise<Contact> => {
+  const localContacts: Contact[] = JSON.parse(localStorage.getItem('mccia_contacts') || '[]');
+  const tempId = 'contact_' + Date.now();
+  const newContact = { ...contact, id: tempId };
+  localStorage.setItem('mccia_contacts', JSON.stringify([...localContacts, newContact]));
+
+  if (!db) return newContact;
+
+  const clientId = getClientId();
+  try {
+    const docRef = await addDoc(collection(db, "users", clientId, "contacts"), contact);
+    const withRealId = { ...contact, id: docRef.id };
+    const updatedLocal = localContacts.concat(withRealId);
+    localStorage.setItem('mccia_contacts', JSON.stringify(updatedLocal));
+    return withRealId;
+  } catch (error) {
+    return newContact;
+  }
+};
+
+export const deleteContact = async (id: string) => {
+  const localContacts: Contact[] = JSON.parse(localStorage.getItem('mccia_contacts') || '[]');
+  localStorage.setItem('mccia_contacts', JSON.stringify(localContacts.filter(c => c.id !== id)));
+
+  if (!db || id.startsWith('contact_')) return;
+
+  const clientId = getClientId();
+  try {
+    await deleteDoc(doc(db, "users", clientId, "contacts", id));
+  } catch (error) {
+    console.error("Cloud contact delete failed:", error);
+  }
 };

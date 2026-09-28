@@ -33,11 +33,20 @@ const getAI = (userKey?: string) => {
   return new GoogleGenAI({ apiKey: key });
 };
 
-export const generateTodayPost = async (brand: BrandContext, history: HistoryItem[]) => {
+export const generateTodayPost = async (
+  brand: BrandContext,
+  history: HistoryItem[],
+  objective?: string,
+  platform?: string,
+  brief?: string
+) => {
   const ai = getAI(brand.apiKey);
   const previousThemes = history.slice(0, 5).map(h => h.content).join("\n");
-  
-  const prompt = `Give me a post for today. 
+
+  const prompt = `Give me a post for today.
+  ${objective ? `Objective: ${objective}` : ''}
+  ${platform ? `Target platform: ${platform}` : ''}
+  ${brief ? `What the post should be about: ${brief}` : ''}
   Recent posts to avoid repeating: ${previousThemes}
   Output format:
   [CAPTION]
@@ -173,4 +182,32 @@ export const generateMonthlyPlan = async (brand: BrandContext): Promise<MonthlyP
   } catch (e) {
     return [];
   }
+};
+
+export interface GeneratedImageAsset {
+  imageBytes: string;
+  mimeType: string;
+}
+
+/**
+ * Generates an actual image (not just a prompt spec) via Imagen.
+ * Returns null if the model returned no image (e.g. safety filter, quota).
+ */
+export const generateImageAsset = async (
+  brand: BrandContext,
+  prompt: string,
+  aspectRatio: string = '1:1'
+): Promise<GeneratedImageAsset | null> => {
+  const ai = getAI(brand.apiKey);
+  const response = await ai.models.generateImages({
+    model: 'imagen-3.0-generate-002',
+    prompt,
+    config: {
+      numberOfImages: 1,
+      aspectRatio
+    }
+  });
+  const image = response.generatedImages?.[0]?.image;
+  if (!image?.imageBytes) return null;
+  return { imageBytes: image.imageBytes, mimeType: image.mimeType || 'image/png' };
 };

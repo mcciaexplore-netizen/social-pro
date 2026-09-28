@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { BrandContext, HistoryItem, View } from './types';
+import { BrandContext, HistoryItem, Contact, View } from './types';
 import Onboarding from './components/Onboarding';
 import OnboardingWizard from './components/OnboardingWizard';
 import Dashboard from './components/Dashboard';
@@ -20,7 +20,11 @@ import {
   getUserProfile,
   addHistoryToCloud,
   getHistoryFromCloud,
-  deleteHistoryItem
+  deleteHistoryItem,
+  updateHistoryItemFields,
+  getContacts,
+  addContact,
+  deleteContact
 } from './firebase';
 
 type ContentSegment = 'content' | 'activity';
@@ -28,6 +32,7 @@ type ContentSegment = 'content' | 'activity';
 const App: React.FC = () => {
   const [brand, setBrand] = useState<BrandContext | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   // Returning visitors (a saved profile exists) land on the Dashboard;
   // Business Profile only opens standalone on true first-run (see below,
   // where `!brand` is checked) or when Settings is opened explicitly.
@@ -45,6 +50,9 @@ const App: React.FC = () => {
 
         const cloudHistory = await getHistoryFromCloud();
         setHistory(cloudHistory);
+
+        const cloudContacts = await getContacts();
+        setContacts(cloudContacts);
       } catch (e) {
         console.error("Initialization failed", e);
       } finally {
@@ -78,6 +86,22 @@ const App: React.FC = () => {
   const handleDeleteHistory = async (id: string) => {
     setHistory(prev => prev.filter(item => item.id !== id));
     await deleteHistoryItem(id);
+  };
+
+  const handleUpdateHistory = async (id: string, updates: Partial<HistoryItem>) => {
+    setHistory(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item));
+    await updateHistoryItemFields(id, updates);
+  };
+
+  const handleAddContact = async (contact: Omit<Contact, 'id'>) => {
+    const newContact = await addContact(contact);
+    setContacts(prev => [...prev, newContact]);
+    return newContact;
+  };
+
+  const handleDeleteContact = async (id: string) => {
+    setContacts(prev => prev.filter(c => c.id !== id));
+    await deleteContact(id);
   };
 
   const exportToCSV = () => {

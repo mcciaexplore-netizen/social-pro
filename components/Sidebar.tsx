@@ -1,13 +1,7 @@
 import React from 'react';
 import { View } from '../types';
 import { HomeIcon, ToolsIcon, ContentIcon, HistoryIcon, SettingsIcon } from './Icons';
-
-interface NavItem {
-  label: string;
-  icon: React.FC<{ className?: string }>;
-  active: boolean;
-  onClick: () => void;
-}
+import { TOOLS } from './toolsConfig';
 
 interface Props {
   view: View;
@@ -16,16 +10,8 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
-  const items: NavItem[] = [
-    { label: 'Home', icon: HomeIcon, active: view === 'dashboard', onClick: () => onNavigate('dashboard') },
-    { label: 'Tools', icon: ToolsIcon, active: view === 'tools', onClick: () => onNavigate('tools') },
-    { label: 'My Content', icon: ContentIcon, active: view === 'content' && contentSegment === 'content', onClick: () => onNavigate('content', 'content') },
-    { label: 'History', icon: HistoryIcon, active: view === 'content' && contentSegment === 'activity', onClick: () => onNavigate('content', 'activity') },
-    { label: 'Settings', icon: SettingsIcon, active: view === 'settings', onClick: () => onNavigate('settings') }
-  ];
-
   return (
-    <aside className="hidden md:flex md:flex-col md:w-64 md:shrink-0 md:h-screen md:sticky md:top-0 border-r border-slate-100 bg-white px-5 py-6">
+    <aside className="hidden md:flex md:flex-col md:w-72 md:shrink-0 md:h-screen md:sticky md:top-0 border-r border-slate-100 bg-white px-5 py-6 overflow-y-auto">
       <div className="flex items-center gap-2 px-2 mb-8">
         <img src="/mccia-logo.png" alt="MCCIA" className="h-8 w-auto" />
         <div className="leading-none">
@@ -35,18 +21,62 @@ const Sidebar: React.FC<Props> = ({ view, contentSegment, onNavigate }) => {
       </div>
 
       <nav className="flex-1 space-y-1">
-        {items.map(item => (
+        <button
+          onClick={() => onNavigate('dashboard')}
+          className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+            view === 'dashboard' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+          }`}
+        >
+          <HomeIcon className="w-5 h-5" />
+          Home
+        </button>
+
+        <div className="pt-4 pb-1 px-4 flex items-center gap-2">
+          <ToolsIcon className="w-3.5 h-3.5 text-slate-300" />
+          <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Tools</span>
+        </div>
+        {TOOLS.map(tool => (
           <button
-            key={item.label}
-            onClick={item.onClick}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-              item.active ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            key={tool.view}
+            onClick={() => onNavigate(tool.view)}
+            className={`w-full flex items-center gap-3 pl-8 pr-4 py-2.5 rounded-2xl text-[13px] font-bold whitespace-nowrap transition-all ${
+              view === tool.view ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
             }`}
           >
-            <item.icon className="w-5 h-5" />
-            {item.label}
+            <span className="text-base leading-none shrink-0">{tool.icon}</span>
+            {tool.title}
           </button>
         ))}
+
+        <div className="pt-3 space-y-1">
+          <button
+            onClick={() => onNavigate('content', 'content')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              view === 'content' && contentSegment === 'content' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            }`}
+          >
+            <ContentIcon className="w-5 h-5" />
+            My Content
+          </button>
+          <button
+            onClick={() => onNavigate('content', 'activity')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              view === 'content' && contentSegment === 'activity' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            }`}
+          >
+            <HistoryIcon className="w-5 h-5" />
+            History
+          </button>
+          <button
+            onClick={() => onNavigate('settings')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
+              view === 'settings' ? 'bg-blue-50 text-blue-600' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+            }`}
+          >
+            <SettingsIcon className="w-5 h-5" />
+            Settings
+          </button>
+        </div>
       </nav>
 
       <div className="mt-6 p-5 rounded-[1.75rem] bg-gradient-to-br from-blue-600 to-blue-800 text-white">

@@ -26,13 +26,36 @@ export interface BrandContext {
   firebaseConfigJSON?: string;
 }
 
+export type ContentStatus = 'draft' | 'scheduled' | 'published';
+
+export interface ContentMetrics {
+  views?: number;
+  likes?: number;
+  comments?: number;
+}
+
 export interface HistoryItem {
   id: string;
   timestamp: number;
   type: 'post' | 'offer' | 'reply' | 'broadcast' | 'prompt';
   content: string;
   meta?: any;
+  status?: ContentStatus;
+  scheduledAt?: number;
+  metrics?: ContentMetrics;
 }
+
+export interface Contact {
+  id: string;
+  name: string;
+  phone?: string;
+  industry?: string;
+  location?: string;
+}
+
+export type PostObjective = 'Event Promotion' | 'Product/Service' | 'Educational' | 'Announcement' | 'Engagement';
+export type Platform = 'LinkedIn' | 'Instagram' | 'Facebook';
+export type AudienceMode = 'all' | 'industry' | 'location' | 'selected';
 
 export interface ImagePrompt {
   platform: string;
