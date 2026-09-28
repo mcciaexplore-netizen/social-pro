@@ -156,7 +156,15 @@ const App: React.FC = () => {
       case 'post': return <PostGenerator brand={brand} history={history} onSave={addToHistory} />;
       case 'offer': return <OfferGenerator brand={brand} onSave={addToHistory} />;
       case 'reply': return <ReplyAssistant brand={brand} onSave={addToHistory} />;
-      case 'broadcast': return <BroadcastHelper brand={brand} onSave={addToHistory} />;
+      case 'broadcast': return (
+        <BroadcastHelper
+          brand={brand}
+          onSave={addToHistory}
+          contacts={contacts}
+          onAddContact={handleAddContact}
+          onDeleteContact={handleDeleteContact}
+        />
+      );
       case 'prompt': return <ImagePromptGenerator brand={brand} onSave={addToHistory} />;
       case 'planner': return <MonthlyPlanner brand={brand} />;
       default: return <Dashboard setView={navigate} brand={brand} />;
