@@ -8,6 +8,7 @@ import HeroGrid from './HeroGrid';
 interface Props {
   setView: (view: View) => void;
   brand: BrandContext;
+  searchQuery?: string;
 }
 
 const TIPS = [
@@ -17,7 +18,7 @@ const TIPS = [
   'Reuse your best captions as WhatsApp broadcasts too.'
 ];
 
-const Dashboard: React.FC<Props> = ({ setView, brand }) => {
+const Dashboard: React.FC<Props> = ({ setView, brand, searchQuery }) => {
   const [tip] = useState(() => TIPS[Math.floor(Math.random() * TIPS.length)]);
   const [showGuide, setShowGuide] = useState(false);
 
@@ -50,7 +51,7 @@ const Dashboard: React.FC<Props> = ({ setView, brand }) => {
             <p className="text-sm text-ink font-medium">Choose a tool to get started</p>
           </div>
         </div>
-        <ToolsGrid setView={setView} />
+        <ToolsGrid setView={setView} searchQuery={searchQuery} />
       </div>
 
       <div className="p-4 rounded-xl border border-slate-200 bg-white flex items-center gap-4">

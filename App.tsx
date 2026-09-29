@@ -168,7 +168,7 @@ const App: React.FC = () => {
       );
       case 'prompt': return <ImagePromptGenerator brand={brand} onSave={addToHistory} history={history} onDelete={handleDeleteHistory} />;
       case 'planner': return <MonthlyPlanner brand={brand} />;
-      default: return <Dashboard setView={navigate} brand={brand} />;
+      default: return <Dashboard setView={navigate} brand={brand} searchQuery={searchQuery} />;
     }
   };
 
