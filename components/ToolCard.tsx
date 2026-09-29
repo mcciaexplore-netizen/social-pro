@@ -9,7 +9,7 @@ interface Props {
 const ToolCard: React.FC<Props> = ({ tool, onClick }) => (
   <button
     onClick={onClick}
-    className="group relative flex items-center gap-4 lg:flex-col lg:items-start lg:gap-0 p-4 lg:p-5 border border-slate-200 rounded-xl shadow-card hover:shadow-card-hover hover:border-primary-300 hover:bg-slate-50 hover:-translate-y-1 transition-all duration-300 ease-theme text-left bg-white active:scale-[0.99]"
+    className="group relative flex items-center gap-4 lg:flex-col lg:items-start lg:gap-0 p-4 lg:p-5 border border-slate-200 rounded-xl shadow-card hover:shadow-card-hover hover:border-primary-300 hover:bg-slate-50 hover:-translate-y-1 transition-all duration-300 ease-theme text-left bg-white active:scale-[0.99] w-full h-full"
   >
     <div className="w-11 h-11 lg:w-10 lg:h-10 flex items-center justify-center rounded-lg bg-slate-100 text-primary lg:mb-3 shrink-0 transition-transform duration-300 ease-theme group-hover:scale-110 group-hover:rotate-3">
       <tool.icon className="w-5 h-5" />

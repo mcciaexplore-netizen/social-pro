@@ -25,7 +25,7 @@ const ToolsGrid: React.FC<Props> = ({ setView, searchQuery }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {tools.map((tool, i) => (
-        <div key={tool.view} className="animate-entry" style={{ animationDelay: `${i * 80}ms` }}>
+        <div key={tool.view} className="animate-entry h-full" style={{ animationDelay: `${i * 80}ms` }}>
           <ToolCard tool={tool} onClick={() => setView(tool.view)} />
         </div>
       ))}
