@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mccia-socials-v1';
+const CACHE_NAME = 'mccia-socials-v2';
 const OFFLINE_URLS = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (event) => {
