@@ -53,30 +53,30 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
   return (
     <div className="space-y-6 animate-slide-up">
       <div>
-        <h2 className="text-3xl font-black text-black tracking-tighter">Reply Assistant</h2>
-        <p className="text-sm font-medium text-black">Respond to customer queries with AI-generated replies.</p>
+        <h2 className="text-3xl font-black text-ink tracking-tighter">Reply Assistant</h2>
+        <p className="text-sm font-medium text-ink">Respond to customer queries with AI-generated replies.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        <div className="space-y-4 bg-white border border-slate-200 rounded-xl p-6">
+        <div className="space-y-4 card-glass rounded-card p-6 md:p-9">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer Query</span>
+            <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Customer Query</span>
           </div>
           <div className="bg-green-50 p-3 rounded-xl border border-green-100 flex gap-2 items-start">
             <WhatsAppIcon className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
             <p className="text-xs text-green-800 font-medium">Paste the customer's message below.</p>
           </div>
           <textarea
-            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3.5 h-28 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-bold placeholder:text-slate-300 placeholder:font-medium"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 h-28 outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 transition-all text-ink font-bold placeholder:text-subtle placeholder:font-medium"
             placeholder="e.g. Hi, can you tell me more about your workshop?"
             value={msg}
             onChange={e => setMsg(e.target.value)}
           />
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Context (optional)</label>
+            <label className="text-[10px] font-black text-subtle uppercase tracking-widest">Context (optional)</label>
             <textarea
-              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-3 h-20 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-medium text-sm placeholder:text-slate-300"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 h-20 outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 transition-all text-ink font-medium text-sm placeholder:text-subtle"
               placeholder="Product, event or company details the AI should reference"
               value={context}
               onChange={e => setContext(e.target.value)}
@@ -86,7 +86,7 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
           <button
             onClick={handleGenerate}
             disabled={loading || !msg}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
+            className="w-full bg-primary-gradient text-white shadow-btn hover:shadow-btn-hover hover:-translate-y-0.5 py-4 rounded-btn font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3"
           >
             {loading ? (
               <>
@@ -98,49 +98,49 @@ const ReplyAssistant: React.FC<Props> = ({ brand, onSave }) => {
 
           {variants.length > 0 && (
             <div className="space-y-2 pt-2">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Suggested Replies</span>
+              <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Suggested Replies</span>
               {variants.map((v, i) => (
                 <button
                   key={i}
                   onClick={() => selectVariant(i)}
                   className={`w-full text-left p-3 rounded-xl border-2 transition-all flex items-start justify-between gap-3 ${
- selectedIdx === i ? 'border-blue-500 bg-blue-50' : 'border-slate-100 bg-white hover:border-slate-200'
+ selectedIdx === i ? 'border-primary bg-primary-50' : 'border-slate-200 bg-white hover:border-slate-200'
  }`}
                 >
                   <div className="min-w-0">
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${selectedIdx === i ? 'text-blue-600' : 'text-slate-400'}`}>{v.style}</span>
-                    <p className="text-xs text-black font-medium truncate">{v.text}</p>
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${selectedIdx === i ? 'text-primary' : 'text-subtle'}`}>{v.style}</span>
+                    <p className="text-xs text-ink font-medium truncate">{v.text}</p>
                   </div>
-                  {selectedIdx === i && <span className="text-blue-600 shrink-0">✓</span>}
+                  {selectedIdx === i && <span className="text-primary shrink-0">✓</span>}
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 lg:sticky lg:top-24">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reply Preview</span>
+        <div className="card-glass rounded-card p-6 md:p-9 space-y-4 lg:sticky lg:top-24">
+          <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Reply Preview</span>
           {selectedIdx === null ? (
-            <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-              <p className="text-slate-400 font-bold italic text-sm">Generate replies to preview one here.</p>
+            <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+              <p className="text-subtle font-bold italic text-sm">Generate replies to preview one here.</p>
             </div>
           ) : (
             <>
               <textarea
                 value={editedText}
                 onChange={e => { setEditedText(e.target.value); setSaved(false); }}
-                className="w-full bg-slate-50 p-5 rounded-2xl text-base leading-relaxed text-black font-bold border-l-4 border-blue-500 shadow-inner min-h-[220px] outline-none focus:ring-4 focus:ring-blue-50"
+                className="w-full bg-slate-50 p-5 rounded-xl text-base leading-relaxed text-ink font-bold border-l-4 border-primary shadow-inner min-h-[220px] outline-none focus:ring-4 focus:ring-primary-100"
               />
               <div className="flex items-center justify-end gap-3">
                 <button
                   onClick={() => { navigator.clipboard.writeText(editedText); alert('Copied!'); }}
-                  className="text-blue-600 flex items-center gap-2 text-xs font-black bg-blue-50 px-4 py-2.5 rounded-full hover:bg-blue-100 transition-all active:scale-95"
+                  className="text-primary flex items-center gap-2 text-xs font-black bg-primary-50 px-4 py-2.5 rounded-full hover:bg-primary-100 transition-all active:scale-95"
                 >
                   <CopyIcon className="w-4 h-4" /> Copy Reply
                 </button>
                 <button
                   onClick={handleUseReply}
-                  className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black active:scale-95 transition-all"
+                  className="bg-primary text-white px-5 py-2.5 rounded-full text-xs font-black active:scale-95 transition-all"
                 >
                   {saved ? 'Saved ✓' : 'Use Reply'}
                 </button>

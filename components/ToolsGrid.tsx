@@ -17,15 +17,17 @@ const ToolsGrid: React.FC<Props> = ({ setView, searchQuery }) => {
   if (tools.length === 0) {
     return (
       <div className="text-center py-16 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-        <p className="text-slate-400 font-bold italic">No tools match "{searchQuery}".</p>
+        <p className="text-subtle font-bold italic">No tools match "{searchQuery}".</p>
       </div>
     );
   }
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      {tools.map(tool => (
-        <ToolCard key={tool.view} tool={tool} onClick={() => setView(tool.view)} />
+      {tools.map((tool, i) => (
+        <div key={tool.view} className="animate-entry" style={{ animationDelay: `${i * 80}ms` }}>
+          <ToolCard tool={tool} onClick={() => setView(tool.view)} />
+        </div>
       ))}
     </div>
   );

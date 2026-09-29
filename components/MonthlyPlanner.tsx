@@ -27,16 +27,16 @@ const MonthlyPlanner: React.FC<Props> = ({ brand }) => {
   return (
     <div className="space-y-6">
       <div className="bg-white p-8 rounded-xl border border-slate-200 text-center">
-        <div className="w-12 h-12 bg-slate-100 text-blue-600 rounded-lg flex items-center justify-center mx-auto mb-5">
+        <div className="w-12 h-12 bg-slate-100 text-primary rounded-lg flex items-center justify-center mx-auto mb-5">
           <CalendarIcon className="w-6 h-6" />
         </div>
-        <h3 className="text-xl font-black text-slate-900 mb-2">Monthly Content Outline</h3>
-        <p className="text-slate-500 mb-8 leading-relaxed font-medium">Generate a calendar of what to post. We only suggest topics to save tokens.</p>
+        <h3 className="text-xl font-black text-ink mb-2">Monthly Content Outline</h3>
+        <p className="text-muted mb-8 leading-relaxed font-medium">Generate a calendar of what to post. We only suggest topics to save tokens.</p>
         {!plan.length && (
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-lg font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
+            className="w-full bg-primary-gradient text-white shadow-btn hover:shadow-btn-hover hover:-translate-y-0.5 py-5 rounded-btn font-black disabled:opacity-50 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg"
           >
             {loading ? (
               <>
@@ -53,19 +53,19 @@ const MonthlyPlanner: React.FC<Props> = ({ brand }) => {
       {plan.length > 0 && (
         <div className="animate-in fade-in slide-in-from-bottom-6 duration-500 space-y-3">
           {plan.map((item, idx) => (
-            <div key={idx} className="p-4 border border-slate-100 rounded-2xl flex gap-4 items-start bg-white shadow-sm">
-              <div className="bg-blue-50 text-blue-700 font-black px-3 py-1.5 rounded-lg text-xs shrink-0 w-16 text-center">
+            <div key={idx} className="p-4 border border-slate-200 rounded-xl flex gap-4 items-start bg-white shadow-sm">
+              <div className="bg-primary-50 text-primary font-black px-3 py-1.5 rounded-lg text-xs shrink-0 w-16 text-center">
                 {item.date}
               </div>
               <div>
-                <span className="text-[10px] uppercase font-black text-slate-300 tracking-widest">{item.type}</span>
-                <p className="text-sm font-bold text-slate-800">{item.topic}</p>
+                <span className="text-[10px] uppercase font-black text-subtle tracking-widest">{item.type}</span>
+                <p className="text-sm font-bold text-ink">{item.topic}</p>
               </div>
             </div>
           ))}
           <button
             onClick={() => setPlan([])}
-            className="w-full text-center py-4 text-xs font-black text-slate-400 uppercase tracking-widest hover:text-blue-600 transition-colors"
+            className="w-full text-center py-4 text-xs font-black text-subtle uppercase tracking-widest hover:text-primary transition-colors"
           >
             Clear and generate again
           </button>

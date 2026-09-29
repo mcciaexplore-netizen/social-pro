@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { BrandContext } from '../types';
 import { saveManualFirebaseConfig } from '../firebase';
-import { ChevronLeftIcon, LockIcon } from './Icons';
+import { ChevronLeftIcon, LockIcon, ChevronDownIcon } from './Icons';
 
 interface Props {
   onSave: (brand: BrandContext) => void;
@@ -12,15 +12,15 @@ interface Props {
 
 type FieldErrors = Partial<Record<'businessName' | 'category' | 'city', string>>;
 
-const inputBase = "w-full bg-white border-2 rounded-2xl px-4 py-3.5 outline-none transition-all text-slate-900 font-bold text-base placeholder:text-slate-300 placeholder:font-medium";
-const inputOk = "border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-50";
+const inputBase = "w-full bg-white border-2 rounded-xl px-4 py-3.5 outline-none transition-all text-ink font-bold text-base placeholder:text-subtle placeholder:font-medium";
+const inputOk = "border-slate-200 focus:border-primary focus:ring-[3px] focus:ring-primary-100";
 const inputError = "border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-50";
-const labelBase = "block text-xs font-black text-slate-500 ml-1 uppercase tracking-widest";
-const cardBase = "bg-slate-50 border border-slate-200 rounded-2xl shadow-sm";
+const labelBase = "block text-xs font-black text-muted ml-1 uppercase tracking-widest";
+const cardBase = "bg-slate-50 border border-slate-200 rounded-xl shadow-sm";
 
 const SectionHeading: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="flex items-center gap-3 mb-1">
-    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 shrink-0">{children}</span>
+    <span className="text-[11px] font-black uppercase tracking-[0.2em] text-primary shrink-0">{children}</span>
     <div className="flex-1 h-px bg-slate-100" />
   </div>
 );
@@ -39,14 +39,14 @@ const Frame: React.FC<{ subtitle: string, onCancel?: () => void, children: React
             className="absolute left-0 top-1/2 -translate-y-1/2 p-2 -ml-2 hover:bg-slate-100 rounded-full transition-all active:scale-90"
             aria-label="Back"
           >
-            <ChevronLeftIcon className="w-5 h-5 text-slate-800" />
+            <ChevronLeftIcon className="w-5 h-5 text-ink" />
           </button>
         )}
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-5 border border-slate-100 shadow-sm p-2.5">
+        <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-5 border border-slate-200 shadow-sm p-2.5">
           <img src="/mccia-logo.png" alt="MCCIA" className="w-full h-full object-contain" />
         </div>
-        <h2 className="text-3xl font-black text-slate-900 tracking-tight">Business Profile</h2>
-        <p className="text-slate-500 text-base mt-2 font-medium">{subtitle}</p>
+        <h2 className="text-3xl font-black text-ink tracking-tight">Business Profile</h2>
+        <p className="text-muted text-base mt-2 font-medium">{subtitle}</p>
       </div>
       {children}
     </div>
@@ -124,13 +124,13 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
 
               <div className="space-y-3">
                 <SectionHeading>AI Assistant</SectionHeading>
-                <div className="space-y-2 bg-blue-50 border border-blue-100 rounded-2xl shadow-sm p-5">
-                  <label htmlFor="apiKey" className="block text-xs font-black text-blue-700 ml-1 uppercase tracking-widest">Gemini API Key</label>
+                <div className="space-y-2 bg-primary-50 border border-primary-150 rounded-xl shadow-sm p-5">
+                  <label htmlFor="apiKey" className="block text-xs font-black text-primary ml-1 uppercase tracking-widest">Gemini API Key</label>
                   <input
                     id="apiKey"
                     type="password"
                     autoComplete="off"
-                    className="w-full bg-white border-2 border-blue-100 rounded-xl px-4 py-3.5 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all text-slate-900 placeholder:text-slate-300 font-bold text-base"
+                    className="w-full bg-white border-2 border-primary-150 rounded-xl px-4 py-3.5 outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 transition-all text-ink placeholder:text-subtle font-bold text-base"
                     placeholder="Paste your Gemini API key here..."
                     value={formData.apiKey || ''}
                     onChange={e => setFormData({ ...formData, apiKey: e.target.value })}
@@ -140,11 +140,11 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
                       href="https://aistudio.google.com/app/apikey"
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[11px] font-bold text-blue-600 hover:text-blue-800 underline ml-1"
+                      className="text-[11px] font-bold text-primary hover:text-primary underline ml-1"
                     >
                       Get a free API key from Google AI Studio
                     </a>
-                    <span className="text-[11px] font-bold text-blue-400 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-primary flex items-center gap-1">
                       <LockIcon className="w-3 h-3" /> Stays on this device
                     </span>
                   </div>
@@ -248,18 +248,18 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
             </div>
           </div>
 
-          <div className="pt-2 border-t border-slate-100">
+          <div className="pt-2 border-t border-slate-200">
             <details className="group pt-6">
-              <summary className="text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer list-none flex items-center gap-2">
-                <span className="group-open:rotate-90 transition-transform">▸</span>
+              <summary className="text-xs font-black text-muted uppercase tracking-widest cursor-pointer list-none flex items-center gap-2">
+                <ChevronDownIcon className="w-3.5 h-3.5 group-open:rotate-180 transition-transform duration-300 ease-theme" />
                 Cloud Sync (Optional)
               </summary>
               <div className={`${cardBase} mt-4 space-y-2 p-5`}>
-                 <p className="text-[11px] text-slate-500 leading-normal">
+                 <p className="text-[11px] text-muted leading-normal">
                    Paste the full "firebaseConfig" code block from your Firebase Console here.
                  </p>
                  <textarea
-                   className="w-full bg-white border-2 border-slate-100 rounded-xl px-4 py-2 font-mono text-[10px] text-slate-600 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 min-h-[100px]"
+                   className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 font-mono text-[10px] text-muted outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 min-h-[100px]"
                    placeholder={`const firebaseConfig = {\n  apiKey: "...",\n  projectId: "..."\n};`}
                    value={formData.firebaseConfigJSON || ''}
                    onChange={e => setFormData({ ...formData, firebaseConfigJSON: e.target.value })}
@@ -271,7 +271,7 @@ const Onboarding: React.FC<Props> = ({ onSave, initialData, onCancel }) => {
           <div className="pt-2 max-w-md mx-auto w-full space-y-3">
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black text-lg active:scale-95 hover:-translate-y-0.5 transition-all"
+              className="w-full bg-primary-gradient text-white shadow-btn hover:shadow-btn-hover hover:-translate-y-0.5 py-4 rounded-btn font-black text-lg active:scale-95 hover:-translate-y-0.5 transition-all"
             >
               {initialData ? 'Update Profile' : 'Save & Start'}
             </button>

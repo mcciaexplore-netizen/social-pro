@@ -33,8 +33,8 @@ const TYPE_DOT: Record<string, string> = {
 };
 
 const STATUS_STYLE: Record<ContentStatus, string> = {
-  draft: 'bg-slate-100 text-slate-500',
-  scheduled: 'bg-amber-50 text-amber-600',
+  draft: 'bg-slate-100 text-muted',
+  scheduled: 'bg-primary-50 text-primary',
   published: 'bg-green-50 text-green-600'
 };
 
@@ -65,7 +65,7 @@ const StatusBadge: React.FC<{ status: ContentStatus, onChange: (s: ContentStatus
               <button
                 key={s}
                 onClick={() => { onChange(s); setOpen(false); }}
-                className={`w-full text-left px-3 py-2 text-[10px] uppercase font-black transition-all ${s === status ? STATUS_STYLE[s] : 'text-slate-500 hover:bg-slate-50'}`}
+                className={`w-full text-left px-3 py-2 text-[10px] uppercase font-black transition-all ${s === status ? STATUS_STYLE[s] : 'text-muted hover:bg-slate-50'}`}
               >
                 {s}
               </button>
@@ -87,38 +87,38 @@ const MetricsRow: React.FC<{ item: HistoryItem, onUpdate: (id: string, updates: 
 
   if (editing) {
     return (
-      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100">
-        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Log performance:</span>
-        <input value={views} onChange={e => setViews(e.target.value)} placeholder="Views" type="number" className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-black" />
-        <input value={likes} onChange={e => setLikes(e.target.value)} placeholder="Likes" type="number" className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-black" />
-        <input value={comments} onChange={e => setComments(e.target.value)} placeholder="Comments" type="number" className="w-24 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-black" />
+      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
+        <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Log performance:</span>
+        <input value={views} onChange={e => setViews(e.target.value)} placeholder="Views" type="number" className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-ink" />
+        <input value={likes} onChange={e => setLikes(e.target.value)} placeholder="Likes" type="number" className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-ink" />
+        <input value={comments} onChange={e => setComments(e.target.value)} placeholder="Comments" type="number" className="w-24 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-ink" />
         <button
           onClick={() => {
             onUpdate(item.id, { metrics: { views: Number(views) || undefined, likes: Number(likes) || undefined, comments: Number(comments) || undefined } });
             setEditing(false);
           }}
-          className="text-xs font-black text-white bg-blue-600 px-3 py-1.5 rounded-lg"
+          className="text-xs font-black text-white bg-primary px-3 py-1.5 rounded-lg"
         >
           Save
         </button>
-        <button onClick={() => setEditing(false)} className="text-xs font-black text-slate-400">Cancel</button>
+        <button onClick={() => setEditing(false)} className="text-xs font-black text-subtle">Cancel</button>
       </div>
     );
   }
 
   const hasMetrics = item.metrics && (item.metrics.views || item.metrics.likes || item.metrics.comments);
   return (
-    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+    <div className="flex items-center justify-between pt-3 border-t border-slate-200">
       {hasMetrics ? (
-        <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
+        <div className="flex items-center gap-4 text-xs font-bold text-muted">
           {item.metrics?.views != null && <span>👁 {item.metrics.views.toLocaleString()}</span>}
           {item.metrics?.likes != null && <span>♥ {item.metrics.likes.toLocaleString()}</span>}
           {item.metrics?.comments != null && <span>💬 {item.metrics.comments.toLocaleString()}</span>}
         </div>
       ) : (
-        <span className="text-xs text-slate-300 italic font-medium">No performance logged yet</span>
+        <span className="text-xs text-subtle italic font-medium">No performance logged yet</span>
       )}
-      <button onClick={() => setEditing(true)} className="text-[10px] font-black text-blue-600 hover:underline uppercase tracking-widest">
+      <button onClick={() => setEditing(true)} className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">
         {hasMetrics ? 'Edit' : '+ Log Performance'}
       </button>
     </div>
@@ -145,30 +145,30 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
     <div className="space-y-6 animate-slide-up">
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h2 className="text-3xl font-black text-black tracking-tighter">
+          <h2 className="text-3xl font-black text-ink tracking-tighter">
             {segment === 'content' ? 'My Content' : 'Activity Log'}
           </h2>
-          <p className="text-sm font-medium text-black">
+          <p className="text-sm font-medium text-ink">
             {segment === 'content' ? 'Manage and track all your content in one place' : 'Cloud-synced history of every action'}
           </p>
         </div>
         {segment === 'activity' && history.length > 0 && (
-          <button onClick={onExport} className="bg-blue-600 text-white px-5 py-2.5 rounded-full text-xs font-black active:scale-95 transition-all">
+          <button onClick={onExport} className="bg-primary text-white px-5 py-2.5 rounded-full text-xs font-black active:scale-95 transition-all">
             Export CSV
           </button>
         )}
       </div>
 
-      <div className="flex bg-slate-100 p-1.5 rounded-2xl w-full sm:w-fit">
+      <div className="flex bg-slate-100 p-1.5 rounded-xl w-full sm:w-fit">
         <button
           onClick={() => onSegmentChange('content')}
-          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${segment === 'content' ? 'bg-white text-blue-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${segment === 'content' ? 'bg-white text-primary shadow-md' : 'text-subtle hover:text-muted'}`}
         >
           <ContentIcon className="w-4 h-4" /> My Content
         </button>
         <button
           onClick={() => onSegmentChange('activity')}
-          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${segment === 'activity' ? 'bg-white text-blue-600 shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+          className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${segment === 'activity' ? 'bg-white text-primary shadow-md' : 'text-subtle hover:text-muted'}`}
         >
           <HistoryIcon className="w-4 h-4" /> Activity
         </button>
@@ -182,27 +182,27 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                 <button
                   key={t.key}
                   onClick={() => setTypeTab(t.key)}
-                  className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${typeTab === t.key ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+                  className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${typeTab === t.key ? 'bg-primary text-white' : 'bg-slate-100 text-subtle hover:bg-slate-200'}`}
                 >
                   {t.label}
                 </button>
               ))}
             </div>
             <div className="relative w-full sm:w-64 shrink-0">
-              <SearchIcon className="w-4 h-4 text-slate-300 absolute left-4 top-1/2 -translate-y-1/2" />
+              <SearchIcon className="w-4 h-4 text-subtle absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search content..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-sm font-medium text-black placeholder:text-slate-300 outline-none focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-50 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2.5 text-sm font-medium text-ink placeholder:text-subtle outline-none focus:border-primary-300 focus:bg-white focus:ring-4 focus:ring-primary-100 transition-all"
               />
             </div>
           </div>
 
           {contentFiltered.length === 0 ? (
             <div className="text-center py-24 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-              <FolderIcon className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
+              <FolderIcon className="w-8 h-8 text-subtle mx-auto mb-3" />
+              <p className="text-subtle font-bold italic">Nothing here yet.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -214,10 +214,10 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                   <div key={item.id} className="p-6 border border-slate-200 rounded-xl bg-white hover:shadow-lg transition-all">
                     <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-blue-50 text-blue-600 ring-1 ring-blue-100">{item.type}</span>
+                        <span className="px-3 py-1 rounded-full text-[10px] uppercase font-black bg-primary-50 text-primary ring-1 ring-primary-150">{item.type}</span>
                         <StatusBadge status={status} onChange={s => onUpdate(item.id, { status: s })} />
                       </div>
-                      <span className="text-[10px] font-bold text-slate-400 tracking-tighter uppercase">
+                      <span className="text-[10px] font-bold text-subtle tracking-tighter uppercase">
                         {status === 'scheduled' ? 'Scheduled: ' : ''}{new Date(displayDate).toLocaleDateString()}
                       </span>
                     </div>
@@ -225,10 +225,10 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                     {isImage ? (
                       <div className="flex gap-4">
                         <img src={item.content} alt="Design" className="w-24 h-24 rounded-xl object-cover shrink-0" />
-                        <p className="text-sm text-black font-bold leading-relaxed line-clamp-4">{item.meta?.prompt || 'Generated design'}</p>
+                        <p className="text-sm text-ink font-bold leading-relaxed line-clamp-4">{item.meta?.prompt || 'Generated design'}</p>
                       </div>
                     ) : (
-                      <p className="text-[15px] text-black whitespace-pre-wrap line-clamp-4 font-bold leading-relaxed">{item.content}</p>
+                      <p className="text-[15px] text-ink whitespace-pre-wrap line-clamp-4 font-bold leading-relaxed">{item.content}</p>
                     )}
 
                     <MetricsRow item={item} onUpdate={onUpdate} />
@@ -236,13 +236,13 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                     <div className="mt-4 flex justify-end items-center gap-5">
                       <button
                         onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
-                        className="text-slate-300 hover:text-red-500 transition-colors"
+                        className="text-subtle hover:text-red-500 transition-colors"
                         aria-label="Delete"
                       >
                         <TrashIcon className="w-4 h-4" />
                       </button>
                       {!isImage && (
-                        <button onClick={() => { navigator.clipboard.writeText(item.content); alert('Copied!'); }} className="text-xs font-black text-blue-600 hover:underline">Copy Again</button>
+                        <button onClick={() => { navigator.clipboard.writeText(item.content); alert('Copied!'); }} className="text-xs font-black text-primary hover:underline">Copy Again</button>
                       )}
                     </div>
                   </div>
@@ -259,7 +259,7 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+                  className={`shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-primary text-white' : 'bg-slate-100 text-subtle hover:bg-slate-200'}`}
                 >
                   {f}
                 </button>
@@ -269,23 +269,23 @@ const ContentHub: React.FC<Props> = ({ history, segment, onSegmentChange, onExpo
 
           {activityFiltered.length === 0 ? (
             <div className="text-center py-24 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-              <FolderIcon className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-400 font-bold italic">Nothing here yet.</p>
+              <FolderIcon className="w-8 h-8 text-subtle mx-auto mb-3" />
+              <p className="text-subtle font-bold italic">Nothing here yet.</p>
             </div>
           ) : (
             <div className="space-y-2">
               {activityFiltered.map(item => {
                 const d = new Date(item.timestamp);
                 return (
-                  <div key={item.id} className="flex items-center gap-4 p-4 border border-slate-100 rounded-2xl bg-white shadow-sm">
+                  <div key={item.id} className="flex items-center gap-4 p-4 border border-slate-200 rounded-xl bg-white shadow-sm">
                     <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${TYPE_DOT[item.type] || 'bg-slate-400'}`}></span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-black truncate">{item.type === 'prompt' && item.meta?.kind === 'image' ? (item.meta?.prompt || 'Generated design') : item.content.replace(/\n/g, ' ')}</p>
-                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{item.type} · {d.toLocaleDateString()} {d.toLocaleTimeString()}</p>
+                      <p className="text-sm font-bold text-ink truncate">{item.type === 'prompt' && item.meta?.kind === 'image' ? (item.meta?.prompt || 'Generated design') : item.content.replace(/\n/g, ' ')}</p>
+                      <p className="text-[10px] font-black text-subtle uppercase tracking-widest">{item.type} · {d.toLocaleDateString()} {d.toLocaleTimeString()}</p>
                     </div>
                     <button
                       onClick={() => { if (confirm('Delete this item?')) onDelete(item.id); }}
-                      className="text-slate-300 hover:text-red-500 transition-colors shrink-0"
+                      className="text-subtle hover:text-red-500 transition-colors shrink-0"
                       aria-label="Delete"
                     >
                       <TrashIcon className="w-4 h-4" />

@@ -126,27 +126,27 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
             className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-all disabled:opacity-0 disabled:pointer-events-none"
             aria-label="Back"
           >
-            <svg className="w-5 h-5 text-slate-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m15 18-6-6 6-6" />
             </svg>
           </button>
           <img src="/mccia-logo.png" alt="MCCIA" className="h-7 w-auto" />
-          <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest w-10 text-right">
+          <span className="text-[10px] font-black text-subtle uppercase tracking-widest w-10 text-right">
             {stepIndex + 1}/{STEPS.length}
           </span>
         </div>
 
         <div className="w-full h-1 bg-slate-100 rounded-full mb-10 overflow-hidden">
           <div
-            className="h-full bg-blue-600 rounded-full transition-all duration-300"
+            className="h-full bg-primary rounded-full transition-all duration-300"
             style={{ width: `${((stepIndex + 1) / STEPS.length) * 100}%` }}
           />
         </div>
 
         <div key={stepIndex} className="animate-slide-up">
-          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight text-center">{step.title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight text-center">{step.title}</h2>
           {step.subtitle && (
-            <p className="text-black font-medium text-center mt-3 leading-relaxed">{step.subtitle}</p>
+            <p className="text-ink font-medium text-center mt-3 leading-relaxed">{step.subtitle}</p>
           )}
 
           <div className="mt-8">
@@ -155,7 +155,7 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
                 autoFocus
                 value={value}
                 onChange={e => setValue(e.target.value)}
-                className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-bold text-lg text-center"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 transition-all text-ink font-bold text-lg text-center"
               >
                 {step.options!.map(opt => (
                   <option key={opt} value={opt}>{opt}</option>
@@ -167,7 +167,7 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
                 value={value}
                 onChange={e => setValue(e.target.value)}
                 placeholder={step.placeholder}
-                className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 py-4 min-h-[120px] resize-none outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-bold placeholder:text-slate-300 placeholder:font-medium"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 min-h-[120px] resize-none outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 transition-all text-ink font-bold placeholder:text-subtle placeholder:font-medium"
               />
             ) : (
               <input
@@ -178,7 +178,7 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
                 onChange={e => setValue(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={step.placeholder}
-                className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all text-black font-bold text-lg text-center placeholder:text-slate-300 placeholder:font-medium"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 outline-none focus:border-primary focus:ring-[3px] focus:ring-primary-100 transition-all text-ink font-bold text-lg text-center placeholder:text-subtle placeholder:font-medium"
               />
             )}
 
@@ -187,7 +187,7 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
                 href="https://aistudio.google.com/app/apikey"
                 target="_blank"
                 rel="noreferrer"
-                className="block text-center text-xs font-bold text-blue-600 hover:text-blue-800 underline mt-3"
+                className="block text-center text-xs font-bold text-primary hover:text-primary underline mt-3"
               >
                 Get a free API key from Google AI Studio
               </a>
@@ -197,14 +197,14 @@ const OnboardingWizard: React.FC<Props> = ({ onSave }) => {
           <div className="mt-10 space-y-3">
             <button
               onClick={goNext}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-black text-lg active:scale-95 hover:-translate-y-0.5 transition-all"
+              className="w-full bg-primary-gradient text-white shadow-btn hover:shadow-btn-hover hover:-translate-y-0.5 py-4 rounded-btn font-black text-lg active:scale-95 hover:-translate-y-0.5 transition-all"
             >
               {isLast ? 'Get Started' : 'Continue'}
             </button>
             {!isLast && (
               <button
                 onClick={goNext}
-                className="w-full text-slate-400 font-bold text-xs uppercase tracking-widest py-2 hover:text-slate-600 transition-colors"
+                className="w-full text-subtle font-bold text-xs uppercase tracking-widest py-2 hover:text-muted transition-colors"
               >
                 Skip for now
               </button>
